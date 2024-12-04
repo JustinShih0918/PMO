@@ -10,33 +10,40 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module SPI_LCD(
-	input wire clk, rst,
+	input wire clk
 	input wire MISO, clear, // DC ,RES
 	output wire MOSI, SCLK, SS, // SDA ,SCL, CS
-    output wire BC
+    output wire BC, RES,
+    // for debugging
+    output wire data_ready_synced_out,
+    output wire send_out
 );
-
     wire clk_250KHz;
     wire key_data_ready, data_ready_synced, lcd_send;
     wire [6:0] encoder_out, lcd_data_out;
     wire clear_inv, spi_done;
     
     // Clear button is active low
-    assign clear_inv = ~clear;
+    assign clear_inv = clear;
+    assign RES = clear;
     assign encoder_out = 7'd127;
     assign BC = 1'b0;
     clock_divider #(.n(4)) clk_div (.clk(clk), .clk_div(clk_250KHz));
+
+    // for debugging
+    assign data_ready_synced_out = data_ready_synced;
+    assign send_out = lcd_send;
     
 	synchronizer sync (
 		.fast_clk(clk_250KHz), 
-		.rst(rst), 
+		.rst(1'b0), 
 		.flag(key_data_ready), 
 		.flag_out(data_ready_synced)
     );
 	
     lcd_ctrl lcd (
         .clk(clk_250KHz), 
-        .rst(rst), 
+        .rst(1'b0), 
         .clear(clear_inv), 
         .spi_done(spi_done), 
         .key_data_out(encoder_out), 
@@ -47,7 +54,7 @@ module SPI_LCD(
     
     spi_master spi (
         .clk(clk_250KHz), 
-        .rst(rst), 
+        .rst(1'b0), 
         .data_in(lcd_data_out), 
         .MISO(MISO), 
         .send(lcd_send), 
