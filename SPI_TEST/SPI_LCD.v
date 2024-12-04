@@ -10,7 +10,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module SPI_LCD(
-	input wire clk, rst
+	input wire clk, rst,
 	input wire MISO, clear, // DC ,RES
 	output wire MOSI, SCLK, SS, // SDA ,SCL, CS
     output wire BC
@@ -23,8 +23,8 @@ module SPI_LCD(
     
     // Clear button is active low
     assign clear_inv = ~clear;
-    assign encoder_out = 7'd32;
-    assign BC = 1'b1;
+    assign encoder_out = 7'd127;
+    assign BC = 1'b0;
     clock_divider #(.n(4)) clk_div (.clk(clk), .clk_div(clk_250KHz));
     
 	synchronizer sync (
