@@ -11,7 +11,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module SPI_LCD(
     input wire clk,
-    input wire MISO, clear, // DC ,RES
+    input wire MISO, clear, // DC 
     output wire MOSI, SCLK, SS, // SDA ,SCL, CS
     output wire BC, RES
 );
@@ -20,9 +20,8 @@ module SPI_LCD(
     reg [6:0] lcd_data_out;
     reg lcd_send;
 
-    // Clear button is active low
     assign RES = clear;
-    assign BC = 1'b0;
+    assign BC = 1'b1;
 
     clock_divider #(.n(4)) clk_div (.clk(clk), .clk_div(clk_250KHz));
 
