@@ -4,8 +4,8 @@ from PIL import Image
 image_path = 'idle/idle_use.jpg'
 img = Image.open(image_path)
 
-# Resize the image to 132x162*16
-img = img.resize((132, 162 * 16))
+# Resize the image to 44x(54*16)
+img = img.resize((44, 54 * 16))
 
 # Convert the image to RGB
 img = img.convert('RGB')
@@ -20,11 +20,11 @@ def rgb_to_16bit(r, g, b):
 # Open the output file
 output_file = 'image_data.txt'
 with open(output_file, 'w') as f:
-    for block in range(16):  # Process each block of 162 lines
-        for y in range(162):
+    for block in range(16):  # Process each block of 54 lines
+        for y in range(54):
             line_data = []
-            for x in range(132):
-                r, g, b = img.getpixel((x, y + block * 162))
+            for x in range(44):
+                r, g, b = img.getpixel((x, y + block * 54))
                 rgb_16bit = rgb_to_16bit(r, g, b)
                 line_data.append(f"16'h{rgb_16bit:04X}")
             f.write(", ".join(line_data) + ",\n")
