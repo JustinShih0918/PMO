@@ -176,8 +176,8 @@ module spi_lcd #
 											else begin y_cnt <= y_cnt + 1'b1; cnt_scan <= 3'd1; end		//否则跳转至RAM时钟使能，循环刷屏
 										end
                                         else begin
-											if(high_word) data_reg <= {1'b1,(8'h29)};	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位
-											else begin data_reg <= {1'b1,8'h35}; x_cnt <= x_cnt + 1'b1; end	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位，同时指向下一个bit
+											if(high_word) data_reg <= {1'b1, ram_lcd_data[15:8]};	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位
+											else begin data_reg <= {1'b1, ram_lcd_data[7:0]}; x_cnt <= x_cnt + 1'b1; end	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位，同时指向下一个bit
 											high_word <= ~high_word;	//high_word的状态翻转
 											num_delay <= 16'd50;	//设定延时时间
 											state <= WRITE;	//跳转至WRITE状态

@@ -63,7 +63,7 @@ module animation_controller (
 
     always @(*) begin
         case (state)
-            IDLE : ram_data <= 16'h2935;
+            IDLE : ram_data <= ram_data_idle;
             SMILE: ram_data <= 16'h2935;
             default: ram_data <= 16'h2935;
         endcase
