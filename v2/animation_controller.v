@@ -9,7 +9,7 @@ module animation_controller (
     output wire lcd_dc_out,
     output wire lcd_clk_out,
     output wire lcd_data_out,
-    output wire lcd_cs_n_out,
+    output wire lcd_cs_n_out
 );
 
     parameter LCD_H = 162;
@@ -19,7 +19,7 @@ module animation_controller (
     parameter SMILE = 1;
 
     wire [7:0] ram_addr;
-    wire [0:15] ram_data [131:0];
+    reg [0:15] ram_data [131:0];
 
     spi_lcd spi_lcd_inst (
         .clk(clk),

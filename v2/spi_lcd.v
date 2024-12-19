@@ -62,7 +62,7 @@ module spi_lcd #
  
 	reg			[7:0]	x_cnt;
 	reg			[7:0]	y_cnt;
-	reg			[131:0]	ram_data_r;
+	// reg			[131:0]	ram_data_r;
  
 	reg			[8:0]	data_reg;				
 	reg			[8:0]	reg_setxy	[10:0];
@@ -77,7 +77,7 @@ module spi_lcd #
 	reg					high_word;
 	reg			[2:0] 	state = IDLE;
 	reg			[2:0] 	state_back = IDLE;
-	wire ram_lcd_clk_en;
+	reg ram_lcd_clk_en;
     assign lcd_cd_n_out = 1'b0;
 	always@(posedge clk or posedge rst_in) begin
 		if(rst_in) begin
@@ -162,7 +162,7 @@ module spi_lcd #
 									end
 							3'd1:	begin ram_lcd_clk_en <= HIGH; ram_lcd_addr <= y_cnt; cnt_scan <= cnt_scan + 1'b1; end	//RAM时钟使能
 							3'd2:	begin cnt_scan <= cnt_scan + 1'b1; end	//延时一个时钟
-							3'd3:	begin ram_lcd_clk_en <= LOW; ram_data_r <= ram_lcd_data; cnt_scan <= cnt_scan + 1'b1; end	//读取RAM数据，同时关闭RAM时钟使能
+							3'd3:	begin ram_lcd_clk_en <= LOW; cnt_scan <= cnt_scan + 1'b1; end	//读取RAM数据，同时关闭RAM时钟使能
 							3'd4:	begin //每个像素点需要16bit的数据，SPI每次传8bit，两次分别传送高8位和低8位
 										if(x_cnt>=LCD_W) begin	//当一个数据(一行屏幕)写完后，
 											x_cnt <= 8'd0;	
@@ -170,8 +170,8 @@ module spi_lcd #
 											else begin y_cnt <= y_cnt + 1'b1; cnt_scan <= 3'd1; end		//否则跳转至RAM时钟使能，循环刷屏
 										end
                                         else begin
-											if(high_word) data_reg <= {1'b1, ram_data[x_cnt][15:8]};	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位
-											else begin data_reg <= {1'b1,ram_data[x_cnt][7:0]}; x_cnt <= x_cnt + 1'b1; end	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位，同时指向下一个bit
+											if(high_word) data_reg <= {1'b1, ram_lcd_data[x_cnt][15:8]};	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位
+											else begin data_reg <= {1'b1,ram_lcd_data[x_cnt][7:0]}; x_cnt <= x_cnt + 1'b1; end	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位，同时指向下一个bit
 											high_word <= ~high_word;	//high_word的状态翻转
 											num_delay <= 16'd50;	//设定延时时间
 											state <= WRITE;	//跳转至WRITE状态

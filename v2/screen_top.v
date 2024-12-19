@@ -9,7 +9,7 @@ module screen_top (
     output wire lcd_dc_out,
     output wire lcd_clk_out,
     output wire lcd_data_out,
-    output wire lcd_cs_n_out,
+    output wire lcd_cs_n_out
 );
 
     animation_controller animation_controller_inst (
