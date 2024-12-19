@@ -25,7 +25,7 @@ module animation_controller (
     spi_lcd spi_lcd_inst (
         .clk(clk),
         .rst_in(rst),
-        .ran_lcd_data(ram_data),
+        .ram_lcd_data(ram_data),
         .ram_lcd_addr_y(cnt_y),
         .ram_lcd_addr_x(cnt_x),
         .lcd_rst_n_out(lcd_rst_n_out),
@@ -36,7 +36,7 @@ module animation_controller (
         .lcd_cs_n_out(lcd_cs_n_out)
     );
 
-    reg [15:0] ram_data_idle;
+    wire [15:0] ram_data_idle;
     idle idle_inst (
         .clk(clk),
         .rst(rst),
@@ -54,12 +54,8 @@ module animation_controller (
     always @(*) begin
         case (state)
             IDLE: begin
-                if(go) next_state <= SMILE;
-                else next_state <= IDLE;
-            end 
-            SMILE: begin
                 if(go) next_state <= IDLE;
-                else next_state <= SMILE;
+                else next_state <= IDLE;
             end
             default: next_state <= state;
         endcase
@@ -67,9 +63,9 @@ module animation_controller (
 
     always @(*) begin
         case (state)
-            IDLE : ram_data <= ram_data_idle;
-            SMILE: ram_data <= ram_data_idle;
-            default: ram_data <= ram_data_idle;
+            IDLE : ram_data <= 16'h2935;
+            SMILE: ram_data <= 16'h2935;
+            default: ram_data <= 16'h2935;
         endcase
     end
 endmodule
