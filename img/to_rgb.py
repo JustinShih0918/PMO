@@ -26,7 +26,7 @@ with open(output_file, 'w') as f:
             for x in range(132):
                 r, g, b = img.getpixel((x, y + block * 162))
                 rgb_16bit = rgb_to_16bit(r, g, b)
-                line_data.append(f"16'd{rgb_16bit:04X}")
+                line_data.append(f"16'h{rgb_16bit:04X}")
             f.write(", ".join(line_data) + ",\n")
         f.write("\n")  # Add a blank line to separate blocks
 
