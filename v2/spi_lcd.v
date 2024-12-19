@@ -15,7 +15,7 @@
 // Version: |Mod. Date:   |Changes Made:
 // V1.1     |2016/10/30   |Initial ver
 // --------------------------------------------------------------------
-module LCD_RGB #
+module spi_lcd #
 (
 	parameter LCD_W = 8'd132,			//screen width
 	parameter LCD_H = 8'd162			//screen height

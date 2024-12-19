@@ -24,7 +24,7 @@ module animation_controller (
 
     spi_lcd spi_lcd_inst (
         .clk(clk),
-        .rst_in(rst),
+        .rst(rst),
         .ram_lcd_data(ram_data),
         .ram_lcd_addr_y(cnt_y),
         .ram_lcd_addr_x(cnt_x),
