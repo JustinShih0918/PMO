@@ -23,10 +23,11 @@ module spi_lcd #
 (
 	input				clk,			//100MHz
 	input				rst_in,		//high trigger
-    input		[0:15]	ram_lcd_data [131:0],	//RAM数据信号
+    input				ram_lcd_data [15:0],	//RAM数据信号
 
 	// output	reg			ram_lcd_clk_en,	//RAM时钟使能 
-	output	reg	[7:0]	ram_lcd_addr,	//RAM地址信号
+	output	reg	[7:0]	ram_lcd_addr_y,	//RAM地址信号
+	output reg [7:0]	ram_lcd_addr_x,	//RAM地址信号
  
 	output	reg			lcd_rst_n_out,	//LCD液晶屏复位 RES
 	output	reg			lcd_bl_out,		//LCD背光控制 BL
@@ -62,6 +63,8 @@ module spi_lcd #
  
 	reg			[7:0]	x_cnt;
 	reg			[7:0]	y_cnt;
+	assign ram_lcd_addr_x = x_cnt;
+	assign ram_lcd_addr_y = y_cnt;
 	// reg			[131:0]	ram_data_r;
  
 	reg			[8:0]	data_reg;				
@@ -170,8 +173,8 @@ module spi_lcd #
 											else begin y_cnt <= y_cnt + 1'b1; cnt_scan <= 3'd1; end		//否则跳转至RAM时钟使能，循环刷屏
 										end
                                         else begin
-											if(high_word) data_reg <= {1'b1, ram_lcd_data[x_cnt][15:8]};	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位
-											else begin data_reg <= {1'b1,ram_lcd_data[x_cnt][7:0]}; x_cnt <= x_cnt + 1'b1; end	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位，同时指向下一个bit
+											if(high_word) data_reg <= {1'b1, ram_lcd_data[15:8]};	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位
+											else begin data_reg <= {1'b1,ram_lcd_data[7:0]}; x_cnt <= x_cnt + 1'b1; end	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位，同时指向下一个bit
 											high_word <= ~high_word;	//high_word的状态翻转
 											num_delay <= 16'd50;	//设定延时时间
 											state <= WRITE;	//跳转至WRITE状态

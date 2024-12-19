@@ -1,6 +1,7 @@
 module idle_mem (
     input [3:0] step,
-    input [7:0] ram_addr,
+    input [7:0] ram_addr_x,
+    input [7:0] ram_addr_y,
     output [0:15] ram_data [131:0]
 );
 
@@ -175,11 +176,6 @@ module idle_mem (
         else img_out <= img_out;
     end
 
-    integer i;
-    always @(*) begin
-        for(i = 0; i < 132; i = i + 1) begin
-            ram_data[i] <= img_out[ram_addr * 132 + i];
-        end
-    end
+    assign ram_data = img_out[ram_addr_y*132 + ram_addr_x];
     
 endmodule

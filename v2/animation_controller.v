@@ -18,14 +18,18 @@ module animation_controller (
     parameter IDLE = 0;
     parameter SMILE = 1;
 
-    wire [7:0] ram_addr;
-    reg [0:15] ram_data [131:0];
+    wire [7:0] cnt_x;
+    wire [7:0] cnt_y;
+    reg ram_data [15:0];
 
+    wire [7:0] cnt_x;
+    wire [7:0] cnt_y;
     spi_lcd spi_lcd_inst (
         .clk(clk),
         .rst_in(rst),
         .ran_lcd_data(ram_data),
-        .ram_lcd_addr(ram_addr),
+        .ram_lcd_addr_y(cnt_y),
+        .ram_lcd_addr_x(cnt_x),
         .lcd_rst_n_out(lcd_rst_n_out),
         .lcd_bl_out(lcd_bl_out),
         .lcd_dc_out(lcd_dc_out),
@@ -34,11 +38,12 @@ module animation_controller (
         .lcd_cs_n_out(lcd_cs_n_out)
     );
 
-    wire [0:15] ram_data_idle [131:0];
+    wire ram_data_idle [15:0];
     idle idle_inst (
         .clk(clk),
         .rst(rst),
-        .ram_addr(ram_addr),
+        .ram_addr_x(cnt_x),
+        .ram_addr_y(cnt_y),
         .ram_data(ram_data_idle)
     );
 
