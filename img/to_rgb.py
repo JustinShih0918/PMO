@@ -1,7 +1,8 @@
 from PIL import Image
+import sys
 
-# Load the image
-image_path = 'idle/idle_use.jpg'
+image_path = 'idle/idle_use.jpg'  # Replace with your image file name
+
 img = Image.open(image_path)
 
 # Resize the image to 44x(54*16)
@@ -21,13 +22,18 @@ def rgb_to_16bit(r, g, b):
 output_file = 'image_data.txt'
 with open(output_file, 'w') as f:
     for block in range(16):  # Process each block of 54 lines
+        f.write(f'parameter [15:0] step{block} [0:2375] = {{\n')
         for y in range(54):
             line_data = []
             for x in range(44):
                 r, g, b = img.getpixel((x, y + block * 54))
                 rgb_16bit = rgb_to_16bit(r, g, b)
                 line_data.append(f"16'h{rgb_16bit:04X}")
-            f.write(", ".join(line_data) + ",\n")
-        f.write("\n")  # Add a blank line to separate blocks
+            line = ', '.join(line_data)
+            if y < 53:
+                f.write(f'    {line},\n')
+            else:
+                f.write(f'    {line}\n')
+        f.write('};\n\n')  # Close the parameter block and add a blank line
 
 print(f"Image data has been written to {output_file}")
