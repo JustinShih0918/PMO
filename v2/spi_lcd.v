@@ -15,17 +15,17 @@
 // Version: |Mod. Date:   |Changes Made:
 // V1.1     |2016/10/30   |Initial ver
 // --------------------------------------------------------------------
-module LCD_RGB #
+module spi_lcd #
 (
 	parameter LCD_W = 8'd132,			//screen width
 	parameter LCD_H = 8'd162			//screen height
 )
 (
 	input				clk,			//100MHz
-	input				rst_n_in,		//high trigger
-    // input		[131:0]	ram_lcd_data,	//RAM数据信号
+	input				rst_in,		//high trigger
+    input		[0:15]	ram_lcd_data [131:0],	//RAM数据信号
 
-	output	reg			ram_lcd_clk_en,	//RAM时钟使能 
+	// output	reg			ram_lcd_clk_en,	//RAM时钟使能 
 	output	reg	[7:0]	ram_lcd_addr,	//RAM地址信号
  
 	output	reg			lcd_rst_n_out,	//LCD液晶屏复位 RES
@@ -33,7 +33,7 @@ module LCD_RGB #
 	output	reg			lcd_dc_out,		//LCD数据指令控制 DC
 	output	reg			lcd_clk_out,	//LCD时钟信号 SCL
 	output	reg			lcd_data_out,	//LCD数据信号 SDA
-    output wire CS
+    output wire lcd_cd_n_out
 );
  
 	localparam			INIT_DEPTH = 16'd73; //LCD初始化的命令及数据的数量
@@ -77,26 +77,10 @@ module LCD_RGB #
 	reg					high_word;
 	reg			[2:0] 	state = IDLE;
 	reg			[2:0] 	state_back = IDLE;
-    parameter [131:0] ram_lcd_data = {
-        1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,
-        1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,
-        1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,
-        1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,
-        1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,
-        1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,
-        1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,
-        1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,
-        1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,
-        1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,
-        1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,
-        1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,
-        1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,1'b1,
-        1'b1,1'b1
-    };
-
-    assign CS = 1'b0;
-	always@(posedge clk or posedge rst_n_in) begin
-		if(rst_n_in) begin
+	wire ram_lcd_clk_en;
+    assign lcd_cd_n_out = 1'b0;
+	always@(posedge clk or posedge rst_in) begin
+		if(rst_in) begin
 			x_cnt <= 8'd0;
 			y_cnt <= 8'd0;
 			ram_lcd_clk_en <= 1'b0;
@@ -186,8 +170,8 @@ module LCD_RGB #
 											else begin y_cnt <= y_cnt + 1'b1; cnt_scan <= 3'd1; end		//否则跳转至RAM时钟使能，循环刷屏
 										end
                                         else begin
-											if(high_word) data_reg <= {1'b1,(ram_data_r[x_cnt]? color_t[15:8]:color_b[15:8])};	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位
-											else begin data_reg <= {1'b1,(ram_data_r[x_cnt]? color_t[7:0]:color_b[7:0])}; x_cnt <= x_cnt + 1'b1; end	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位，同时指向下一个bit
+											if(high_word) data_reg <= {1'b1, ram_data[x_cnt][15:8]};	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位
+											else begin data_reg <= {1'b1,ram_data[x_cnt][7:0]}; x_cnt <= x_cnt + 1'b1; end	//根据相应bit的状态判定显示顶层色或背景色,根据high_word的状态判定写高8位或低8位，同时指向下一个bit
 											high_word <= ~high_word;	//high_word的状态翻转
 											num_delay <= 16'd50;	//设定延时时间
 											state <= WRITE;	//跳转至WRITE状态
