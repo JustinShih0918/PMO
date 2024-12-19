@@ -917,24 +917,30 @@ module idle_mem (
         16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0060, 16'h0060, 16'h0020, 16'h0020, 16'h0020, 16'h0000, 16'h0000, 16'h0040, 16'h0020, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0000, 16'h0800, 16'h0800, 16'h0800, 16'h0800, 16'h1000, 16'h1000, 16'h1000
     };  
 
+    parameter IMG_WIDTH = 44;
+    parameter IMG_HEIGHT = 54;
+    parameter center_x = IMG_WIDTH/2;
+    parameter center_y = IMG_HEIGHT/2;
+    wire [9:0] xpos = center_x + ((ram_addr_x - IMG_WIDTH) >> 2);
+    wire [9:0] ypos = center_y + ((ram_addr_y - IMG_HEIGHT) >> 2);
 
     always @(*) begin
-        if(step == 0) ram_data <= step0[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 1) ram_data <= step1[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 2) ram_data <= step2[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 3) ram_data <= step3[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 4) ram_data <= step4[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 5) ram_data <= step5[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 6) ram_data <= step6[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 7) ram_data <= step7[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 8) ram_data <= step8[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 9) ram_data <= step9[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 10) ram_data <= step10[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 11) ram_data <= step11[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 12) ram_data <= step12[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 13) ram_data <= step13[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 14) ram_data <= step14[ram_addr_y/3*132 + ram_addr_x/3];
-        else if(step == 15) ram_data <= step15[ram_addr_y/3*132 + ram_addr_x/3];
+        if(step == 0) ram_data <= step0[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 1) ram_data <= step1[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 2) ram_data <= step2[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 3) ram_data <= step3[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 4) ram_data <= step4[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 5) ram_data <= step5[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 6) ram_data <= step6[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 7) ram_data <= step7[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 8) ram_data <= step8[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 9) ram_data <= step9[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 10) ram_data <= step10[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 11) ram_data <= step11[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 12) ram_data <= step12[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 13) ram_data <= step13[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 14) ram_data <= step14[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
+        else if(step == 15) ram_data <= step15[(xpos % IMG_WIDTH + ypos * IMG_WIDTH % IMG_HEIGHT) % (IMG_HEIGHT * IMG_WIDTH)];
         else ram_data <= ram_data;
     end
     
