@@ -20,10 +20,8 @@ module animation_controller (
 
     wire [7:0] cnt_x;
     wire [7:0] cnt_y;
-    reg ram_data [15:0];
+    reg [15:0] ram_data;
 
-    wire [7:0] cnt_x;
-    wire [7:0] cnt_y;
     spi_lcd spi_lcd_inst (
         .clk(clk),
         .rst_in(rst),
@@ -38,7 +36,7 @@ module animation_controller (
         .lcd_cs_n_out(lcd_cs_n_out)
     );
 
-    wire ram_data_idle [15:0];
+    reg [15:0] ram_data_idle;
     idle idle_inst (
         .clk(clk),
         .rst(rst),

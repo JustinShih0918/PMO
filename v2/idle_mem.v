@@ -2,7 +2,7 @@ module idle_mem (
     input [3:0] step,
     input [7:0] ram_addr_x,
     input [7:0] ram_addr_y,
-    output [0:15] ram_data [131:0]
+    output [15:0] ram_data
 );
 
     parameter [0:15] step0 [21384:0] = {

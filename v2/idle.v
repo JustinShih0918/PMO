@@ -3,7 +3,7 @@ module idle (
     input wire rst,
     input wire [7:0] ram_addr_x,
     input wire [7:0] ram_addr_y,
-    output wire [0:15] ram_data [131:0],
+    output wire [15:0] ram_data
 );
     reg [3:0] step;
     wire clk_23;
