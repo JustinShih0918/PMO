@@ -10,12 +10,12 @@ img = img.resize((132, 162 * 16))
 # Convert the image to RGB
 img = img.convert('RGB')
 
-# Function to convert 8-bit RGB to 6-bit RGB
-def rgb_to_18bit(r, g, b):
-    r_6bit = (r >> 2) & 0x3F
+# Function to convert 8-bit RGB to 16-bit RGB (5 bits for red, 6 bits for green, 5 bits for blue)
+def rgb_to_16bit(r, g, b):
+    r_5bit = (r >> 3) & 0x1F
     g_6bit = (g >> 2) & 0x3F
-    b_6bit = (b >> 2) & 0x3F
-    return (r_6bit << 12) | (g_6bit << 6) | b_6bit
+    b_5bit = (b >> 3) & 0x1F
+    return (r_5bit << 11) | (g_6bit << 5) | b_5bit
 
 # Open the output file
 output_file = 'image_data.txt'
@@ -25,8 +25,8 @@ with open(output_file, 'w') as f:
             line_data = []
             for x in range(132):
                 r, g, b = img.getpixel((x, y + block * 162))
-                rgb_18bit = rgb_to_18bit(r, g, b)
-                line_data.append(f"16'd{rgb_18bit:05X}")
+                rgb_16bit = rgb_to_16bit(r, g, b)
+                line_data.append(f"16'd{rgb_16bit:04X}")
             f.write(", ".join(line_data) + ",\n")
         f.write("\n")  # Add a blank line to separate blocks
 
