@@ -92,14 +92,14 @@ module joystick_top(
 			one_pulse right_pulse(.clk(clk), .pb_in(right_pb), .pb_out(right));
 
 			// X
-			assign right_pb = ({jstkData[23:16]} > 8'd800) ? 1'b1 : 1'b0;
-			assign left_pb = ({jstkData[23:16]} < 8'd200) ? 1'b1 : 1'b0;
+			assign right_pb = ({jstkData[9:8],jstkData[23:16]} > 10'd800) ? 1'b1 : 1'b0;
+			assign left_pb = ({jstkData[9:8],jstkData[23:16]} < 8'd200) ? 1'b1 : 1'b0;
 
 			// Y
-			assign up_pb = ({jstkData[39:32]} > 8'd800) ? 1'b1 : 1'b0;
-			assign down_pb = ({jstkData[39:32]} < 8'd200) ? 1'b1 : 1'b0;
+			assign up_pb = ({jstkData[25:24],jstkData[39:32]} > 10'd800) ? 1'b1 : 1'b0;
+			assign down_pb = ({jstkData[25:24],jstkData[39:32]} < 8'd200) ? 1'b1 : 1'b0;
 			
 
 			// Data to be sent to PmodJSTK, lower two bits will turn on leds on PmodJSTK
-			assign sndData = {8'b100000, {0, 0}};
+			assign sndData = {8'b100000, 2'b00};
 endmodule

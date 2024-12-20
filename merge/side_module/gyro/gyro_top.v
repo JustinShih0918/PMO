@@ -62,7 +62,7 @@ module gyro_top (
 	inout wire gyro_MOSI,
 	inout wire gyro_MISO,
 	inout wire gyro_SCLK,
-	output wire awaking,
+	output wire awaking
 );
 
 // ==============================================================================
