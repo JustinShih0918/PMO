@@ -56,24 +56,19 @@
 // ==============================================================================
 // 										  Define Module
 // ==============================================================================
-module PmodGYRO_Demo(
-		sw,
-		clk,
-		an,
-		seg,
-		dp,
-		JA
+module gyro_top (
+	input wire clk,
+	input wire rst,
+	inout wire gyro_cs,
+	inout wire gyro_MOSI,
+	inout wire gyro_MISO,
+	inout wire gyro_SCLK,
+	output wire awaking,
 );
 
 // ==============================================================================
 // 										Port Declarations
 // ==============================================================================
-   input [4:0]  sw;
-   input        clk;
-   output [3:0] an;
-   output [6:0] seg;
-   output       dp;
-   inout [3:0]  JA;
    
 // ==============================================================================
 // 							  Parameters, Registers, and Wires
@@ -101,9 +96,9 @@ module PmodGYRO_Demo(
 						.send_data(send_data),
 						.recieved_data(recieved_data),
 						.clk(clk),
-						.rst(sw[0]),
+						.rst(rst),
 						.slave_select(slave_select),
-						.start(sw[1]),
+						.start(1),
 						.temp_data(temp_data),
 						.x_axis_data(x_axis_data),
 						.y_axis_data(y_axis_data),
@@ -119,33 +114,14 @@ module PmodGYRO_Demo(
 						.slave_select(slave_select),
 						.send_data(send_data),
 						.recieved_data(recieved_data),
-						.miso(JA[2]),
+						.miso(gyro_MISO),
 						.clk(clk),
-						.rst(sw[0]),
+						.rst(rst),
 						.end_transmission(end_transmission),
-						.mosi(JA[1]),
-						.sclk(JA[3])
+						.mosi(gyro_MOSI),
+						.sclk(gyro_SCLK)
 			);
-
-
-			//--------------------------------------
-			//		      Display Controller
-			//--------------------------------------
-			display_controller C2(
-						.clk(clk),
-						.rst(sw[0]),
-						.sel(sw[3:2]),
-						.temp_data(temp_data),
-						.x_axis(x_axis_data[15:0]),
-						.y_axis(y_axis_data[15:0]),
-						.z_axis(z_axis_data[15:0]),
-						.dp(dp),
-						.an(an),
-						.seg(seg),
-						.display_sel(sw[4])
-			);
-
 			//  Assign slave select output
-			assign JA[0] = slave_select;
-   
+			assign gyro_cs = slave_select;
+			assign awaking = (x_axis_data > 16'd10 || y_axis_data > 16'd10 || z_axis_data > 16'd10) ? 1 : 0;
 endmodule
