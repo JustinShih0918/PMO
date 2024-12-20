@@ -16,13 +16,11 @@ module animation_controller (
     parameter LCD_W = 132;
 
     parameter IDLE = 0;
-    parameter SMILE = 1;
+    parameter HAPPY = 1;
 
     wire [7:0] cnt_x;
     wire [7:0] cnt_y;
     reg [15:0] ram_data;
-    wire clk_10;
-    clock_divider #(.n(10)) clock_divider_inst (.clk(clk), .clk_div(clk_10));
 
     spi_lcd spi_lcd_inst (
         .clk(clk),
@@ -65,12 +63,12 @@ module animation_controller (
     always @(*) begin
         case (state)
             IDLE: begin
-                if(go) next_state <= SMILE;
+                if(go) next_state <= HAPPY;
                 else next_state <= IDLE;
             end
-            SMILE: begin
+            HAPPY: begin
                 if(go) next_state <= IDLE;
-                else next_state <= SMILE;
+                else next_state <= HAPPY;
             end
             default: next_state <= state;
         endcase
@@ -79,7 +77,7 @@ module animation_controller (
     always @(*) begin
         case (state)
             IDLE : ram_data <= ram_data_idle;
-            SMILE: ram_data <= ram_data_happy;
+            HAPPY: ram_data <= ram_data_happy;
             default: ram_data <= 16'h2935;
         endcase
     end
