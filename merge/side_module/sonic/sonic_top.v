@@ -11,7 +11,7 @@ module sonic_top(clk, rst, Echo, Trig, expecting);
     wire [19:0] distance;
     assign distance = dis;
 
-    assign expecting = (dis < 20'd10) ? 1 : 0;
+    assign expecting = (dis < 20'd20) ? 1 : 0;
 
     div clk1(clk ,clk1M);
 	TrigSignal u1(.clk(clk), .rst(rst), .trig(Trig));

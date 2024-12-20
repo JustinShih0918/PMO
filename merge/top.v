@@ -3,7 +3,7 @@ module top (
     input wire rst,
     input wire go,
 
-    // gyro_top XA1_P ~ XAP4_P
+    // gyro_top JA7 ~ JA10
     inout wire gyro_ss,
 	inout wire gyro_MOSI,
 	inout wire gyro_MISO,
@@ -13,9 +13,9 @@ module top (
     input wire touch1, //JC1
     input wire touch2, //JC2
 
-    // sonic_top XA1_N ~ XA2_N
-    input wire Echo,
-    output wire Trig,
+    // sonic_top 
+    input wire Echo, // JC3
+    output wire Trig, // JC4
 
     // joystick_top JA 1~4
     output joystick_SS,

@@ -78,18 +78,23 @@ module joystick_top(
 			);
 			
 			
-			one_pulse pressed_pulse(
-				.clk(clk),
-				.pb_in(jstkData[0]),
-				.pb_out(pressed)
-			);
+			// one_pulse pressed_pulse(
+			// 	.clk(clk),
+			// 	.pb_in(jstkData[0]),
+			// 	.pb_out(pressed)
+			// );
+			assign pressed = jstkData[0];
 
 			// select direction
 			wire up_pb, down_pb, left_pb, right_pb;
-			one_pulse up_pulse(.clk(clk), .pb_in(up_pb), .pb_out(up));
-			one_pulse down_pulse(.clk(clk), .pb_in(down_pb), .pb_out(down));
-			one_pulse left_pulse(.clk(clk), .pb_in(left_pb), .pb_out(left));
-			one_pulse right_pulse(.clk(clk), .pb_in(right_pb), .pb_out(right));
+			// one_pulse up_pulse(.clk(clk), .pb_in(up_pb), .pb_out(up));
+			// one_pulse down_pulse(.clk(clk), .pb_in(down_pb), .pb_out(down));
+			// one_pulse left_pulse(.clk(clk), .pb_in(left_pb), .pb_out(left));
+			// one_pulse right_pulse(.clk(clk), .pb_in(right_pb), .pb_out(right));
+			assign up = up_pb;
+			assign down = down_pb;
+			assign left = left_pb;
+			assign right = right_pb;
 
 			// X
 			assign right_pb = ({jstkData[9:8],jstkData[23:16]} > 10'd800) ? 1'b1 : 1'b0;
