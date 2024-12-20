@@ -133,8 +133,8 @@ set_property PACKAGE_PIN T18 [get_ports go]
  set_property PACKAGE_PIN J2 [get_ports {joystick_MISO}]
     set_property IOSTANDARD LVCMOS33 [get_ports {joystick_MISO}]
 # Sch name = JA4
- set_property PACKAGE_PIN G2 [get_ports {joystick_SCK}]
-    set_property IOSTANDARD LVCMOS33 [get_ports {joystick_SCK}]
+ set_property PACKAGE_PIN G2 [get_ports {joystick_SCLK}]
+    set_property IOSTANDARD LVCMOS33 [get_ports {joystick_SCLK}]
 # # Sch name = JA7
 #  set_property PACKAGE_PIN H1 [get_ports {gyro_ss}]
 #     set_property IOSTANDARD LVCMOS33 [get_ports {gyro_ss}]
@@ -216,8 +216,8 @@ set_property PACKAGE_PIN L3 [get_ports {gyro_MOSI}]
 set_property PACKAGE_PIN M2 [get_ports {gyro_MISO}]
    set_property IOSTANDARD LVCMOS33 [get_ports {gyro_MISO}]
 # Sch name = XA4_P
-set_property PACKAGE_PIN N2 [get_ports {gyro_SCK}]
-  set_property IOSTANDARD LVCMOS33 [get_ports {gyro_SCK}]
+set_property PACKAGE_PIN N2 [get_ports {gyro_SCLK}]
+  set_property IOSTANDARD LVCMOS33 [get_ports {gyro_SCLK}]
 #   set_property PULLUP true [get_ports ble_rx]
 # Sch name = XA1_N
 set_property PACKAGE_PIN K3 [get_ports {Echo}]

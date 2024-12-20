@@ -62,7 +62,7 @@ module top (
     gyro_top gyro_top_inst (
         .clk(clk),
         .rst(rst_op),
-        .gyro_cs(gyro_ss),
+        .gyro_ss(gyro_ss),
         .gyro_MOSI(gyro_MOSI),
         .gyro_MISO(gyro_MISO),
         .gyro_SCLK(gyro_SCLK),
