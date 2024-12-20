@@ -58,7 +58,7 @@
 module gyro_top (
 	input wire clk,
 	input wire rst,
-	inout wire gyro_cs,
+	inout wire gyro_ss,
 	inout wire gyro_MOSI,
 	inout wire gyro_MISO,
 	inout wire gyro_SCLK,
@@ -121,6 +121,6 @@ module gyro_top (
 						.sclk(gyro_SCLK)
 			);
 			//  Assign slave select output
-			assign gyro_cs = slave_select;
+			assign gyro_ss = slave_select;
 			assign awaking = (x_axis_data > 16'd10 || y_axis_data > 16'd10 || z_axis_data > 16'd10) ? 1 : 0;
 endmodule

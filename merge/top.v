@@ -3,24 +3,24 @@ module top (
     input wire rst,
     input wire go,
 
-    // gyro_top
-    inout wire gyro_cs,
+    // gyro_top XA1_P ~ XAP4_P
+    inout wire gyro_ss,
 	inout wire gyro_MOSI,
 	inout wire gyro_MISO,
 	inout wire gyro_SCLK,
 
     // touch_top
-    input wire touch1,
-    input wire touch2,
+    input wire touch1, //JC1
+    input wire touch2, //JC2
 
-    // sonic_top
+    // sonic_top XA1_N ~ XA2_N
     input wire Echo,
     output wire Trig,
 
-    // joystich_top
-    input wire joystick_MISO,
+    // joystick_top JA 1~4
     output joystick_SS,
     output joystick_MOSI,
+    input wire joystick_MISO,
     output joystick_SCLK,
 
     // screen_top
@@ -62,7 +62,7 @@ module top (
     gyro_top gyro_top_inst (
         .clk(clk),
         .rst(rst_op),
-        .gyro_cs(gyro_cs),
+        .gyro_cs(gyro_ss),
         .gyro_MOSI(gyro_MOSI),
         .gyro_MISO(gyro_MISO),
         .gyro_SCLK(gyro_SCLK),
