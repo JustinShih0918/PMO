@@ -54,7 +54,7 @@ module Binary_To_BCD(
 			reg [4:0] shiftCount = 5'd0;	   // Stores number of shifts executed
 			reg [31:0] tmpSR;						// Temporary shift regsiter
 
-			reg [2:0] STATE = Idle;				// Present state
+			
 			
 			// FSM States
 			parameter [2:0] Idle = 3'b000,
@@ -62,6 +62,7 @@ module Binary_To_BCD(
 								 Shift = 3'b011,
 								 Check = 3'b010,
 								 Done = 3'b110;
+			reg [2:0] STATE = Idle;				// Present state
 
 
 	// ===========================================================================
