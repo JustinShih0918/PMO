@@ -106,25 +106,25 @@ module top (
     );
 
     // screen_top
-    screen_top screen_top_inst (
-        .clk(clk),
-        .rst(rst_op),
-        .go(go_op),
-        .awaking(awaking),
-        .touched(touched),
-        .expecting(expecting),
-        .pressed(pressed),
-        .up(up),
-        .down(down),
-        .left(left),
-        .right(right),
-        .lcd_rst_n_out(lcd_rst_n_out),
-        .lcd_bl_out(lcd_bl_out),
-        .lcd_dc_out(lcd_dc_out),
-        .lcd_clk_out(lcd_clk_out),
-        .lcd_data_out(lcd_data_out),
-        .lcd_cs_n_out(lcd_cs_n_out)
-    );
+    // screen_top screen_top_inst (
+    //     .clk(clk),
+    //     .rst(rst_op),
+    //     .go(go_op),
+    //     .awaking(awaking),
+    //     .touched(touched),
+    //     .expecting(expecting),
+    //     .pressed(pressed),
+    //     .up(up),
+    //     .down(down),
+    //     .left(left),
+    //     .right(right),
+    //     .lcd_rst_n_out(lcd_rst_n_out),
+    //     .lcd_bl_out(lcd_bl_out),
+    //     .lcd_dc_out(lcd_dc_out),
+    //     .lcd_clk_out(lcd_clk_out),
+    //     .lcd_data_out(lcd_data_out),
+    //     .lcd_cs_n_out(lcd_cs_n_out)
+    // );
 
     assign awaking_de = awaking;
     assign touched_de = touched;
