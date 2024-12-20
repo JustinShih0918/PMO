@@ -47,6 +47,15 @@ module animation_controller (
         .ram_data(ram_data_idle)
     );
 
+    wire [15:0] ram_data_happy;
+    happy happy_inst (
+        .clk(clk),
+        .rst(rst),
+        .ram_addr_x(cnt_x),
+        .ram_addr_y(cnt_y),
+        .ram_data(ram_data_happy)
+    );
+
     reg [1:0] state, next_state;
     always @(posedge clk) begin
         if(rst) state <= IDLE;
@@ -56,8 +65,12 @@ module animation_controller (
     always @(*) begin
         case (state)
             IDLE: begin
-                if(go) next_state <= IDLE;
+                if(go) next_state <= SMILE;
                 else next_state <= IDLE;
+            end
+            SMILE: begin
+                if(go) next_state <= IDLE;
+                else next_state <= SMILE;
             end
             default: next_state <= state;
         endcase
@@ -66,7 +79,7 @@ module animation_controller (
     always @(*) begin
         case (state)
             IDLE : ram_data <= ram_data_idle;
-            SMILE: ram_data <= 16'h2935;
+            SMILE: ram_data <= ram_data_happy;
             default: ram_data <= 16'h2935;
         endcase
     end
