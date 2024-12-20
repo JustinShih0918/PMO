@@ -32,14 +32,14 @@ module top (
     output wire lcd_cs_n_out,
 
     // for debugging
-    wire awaking_de;
-    wire touched_de;
-    wire expecting_de;
-    wire pressed_de;
-    wire up_de;
-    wire down_de;
-    wire left_de;
-    wire right_de;
+    output wire awaking_de;
+    output wire touched_de;
+    output wire expecting_de;
+    output wire pressed_de;
+    output wire up_de;
+    output wire down_de;
+    output wire left_de;
+    output wire right_de;
 
 );
 
