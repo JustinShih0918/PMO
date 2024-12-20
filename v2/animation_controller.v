@@ -21,6 +21,8 @@ module animation_controller (
     wire [7:0] cnt_x;
     wire [7:0] cnt_y;
     reg [15:0] ram_data;
+    wire clk_10;
+    clock_divider #(.n(10)) clock_divider_inst (.clk(clk), .clk_div(clk_10));
 
     spi_lcd spi_lcd_inst (
         .clk(clk),
