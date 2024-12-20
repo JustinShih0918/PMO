@@ -1,6 +1,6 @@
 module sonic_top(clk, rst, Echo, Trig, distance);
 	input clk, rst, Echo;
-	output Trig;
+	output Trig; // should connect to the sonic sensor
     output [19:0] distance; // output the distance in cm
 
 	wire[19:0] dis;
