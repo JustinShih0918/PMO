@@ -2,6 +2,14 @@ module screen_top (
     input wire clk,
     input wire rst,
     input wire go,
+    input wire awaking,
+    input wire touched,
+    input wire expecting,
+    input wire pressed,
+    input wire up,
+    input wire down,
+    input wire left,
+    input wire right,
 
     // for lcd screen
     output wire lcd_rst_n_out,

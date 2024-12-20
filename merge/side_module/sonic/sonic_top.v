@@ -1,13 +1,14 @@
 module sonic_top(clk, rst, Echo, Trig, distance);
 	input clk, rst, Echo;
 	output Trig; // should connect to the sonic sensor
-    output [19:0] distance; // output the distance in cm
+    // output [19:0] distance; // output the distance in cm
     output expecting,
 
 	wire[19:0] dis;
     wire clk1M;
 	wire clk_2_17;
 
+    wire [19:0] distance
     assign distance = dis;
 
     assign expecting = (dis < 20'd10) ? 1 : 0;
