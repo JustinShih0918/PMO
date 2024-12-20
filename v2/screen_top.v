@@ -12,10 +12,23 @@ module screen_top (
     output wire lcd_cs_n_out
 );
 
+    wire rst_op;
+    one_pulse one_pulse_rst (
+        .clk(clk),
+        .pb_in(rst),
+        .pb_out(rst_op)
+    );
+    wire go_op;
+    one_pulse one_pulse_go (
+        .clk(clk),
+        .pb_in(go),
+        .pb_out(go_op)
+    );
+
     animation_controller animation_controller_inst (
         .clk(clk),
-        .rst(rst),
-        .go(go),
+        .rst(rst_op),
+        .go(go_op),
         .lcd_rst_n_out(lcd_rst_n_out),
         .lcd_bl_out(lcd_bl_out),
         .lcd_dc_out(lcd_dc_out),
