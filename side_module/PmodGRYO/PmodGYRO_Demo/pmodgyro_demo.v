@@ -62,7 +62,9 @@ module PmodGYRO_Demo(
 		an,
 		seg,
 		dp,
-		JA
+		JA,
+		x_data,
+		awaking
 );
 
 // ==============================================================================
@@ -74,6 +76,8 @@ module PmodGYRO_Demo(
    output [6:0] seg;
    output       dp;
    inout [3:0]  JA;
+   output [14:0] x_data;
+   output awaking;
    
 // ==============================================================================
 // 							  Parameters, Registers, and Wires
@@ -87,6 +91,8 @@ module PmodGYRO_Demo(
    wire [15:0]  y_axis_data;
    wire [15:0]  z_axis_data;
    wire         slave_select;
+   wire [15:0] y_data;
+   wire [15:0] z_data;
    
 // ==============================================================================
 // 							  		   Implementation
@@ -147,5 +153,16 @@ module PmodGYRO_Demo(
 
 			//  Assign slave select output
 			assign JA[0] = slave_select;
+			wire [15:0] tmp;
+			assign awaking = (tmp[11] == 1) ? 1 : 0;
+			assign x_data = tmp[14:0];
+			data_transform trans(
+				.x_axis_data(x_axis_data),
+				.y_axis_data(y_axis_data),
+				.z_axis_data(z_axis_data),
+				.x_data(tmp),
+				.y_data(y_data),
+				.z_data(z_data)
+			);
    
 endmodule
