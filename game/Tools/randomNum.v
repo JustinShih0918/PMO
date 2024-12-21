@@ -4,14 +4,14 @@
 */
 
 module randomNum(
-    input dclk,
+    input clk,
     input rst,
     output reg [1:0] Num
 );
 
 reg [7:0] LFSR;
 
-always @(posedge dclk) begin
+always @(posedge clk) begin
     if (rst) begin
         LFSR <= 8'o1;
         Num <= 0;
