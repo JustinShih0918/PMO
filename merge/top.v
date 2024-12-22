@@ -108,26 +108,35 @@ module top (
         .right(right)
     );
 
-    // screen_top
-    // screen_top screen_top_inst (
-    //     .clk(clk),
-    //     .rst(rst_op),
-    //     .go(go_op),
-    //     .awaking(awaking),
-    //     .touched(touched),
-    //     .expecting(expecting),
-    //     .pressed(pressed),
-    //     .up(up),
-    //     .down(down),
-    //     .left(left),
-    //     .right(right),
-    //     .lcd_rst_n_out(lcd_rst_n_out),
-    //     .lcd_bl_out(lcd_bl_out),
-    //     .lcd_dc_out(lcd_dc_out),
-    //     .lcd_clk_out(lcd_clk_out),
-    //     .lcd_data_out(lcd_data_out),
-    //     .lcd_cs_n_out(lcd_cs_n_out)
-    // );
+    wire awaking_op, pressed_op, up_op, down_op, left_op, right_op;
+    one_pulse one_pulse_awaking (.clk(clk), .pb_in(awaking), .pb_out(awaking_op));
+    one_pulse one_pulse_pressed (.clk(clk), .pb_in(pressed), .pb_out(pressed_op));
+    one_pulse one_pulse_up (.clk(clk), .pb_in(up), .pb_out(up_op));
+    one_pulse one_pulse_down (.clk(clk), .pb_in(down), .pb_out(down_op));
+    one_pulse one_pulse_left (.clk(clk), .pb_in(left), .pb_out(left_op));
+    one_pulse one_pulse_right (.clk(clk), .pb_in(right), .pb_out(right_op));
+
+    screen_top
+    screen_top screen_top_inst (
+        .clk(clk),
+        .rst(rst_op),
+        .go(go_op),
+        .awaking(awaking_op),
+        .touched(touched),
+        .expecting(expecting),
+        .petting(petting),
+        .pressed(pressed_op),
+        .up(up_op),
+        .down(down_op),
+        .left(left_op),
+        .right(right_op),
+        .lcd_rst_n_out(lcd_rst_n_out),
+        .lcd_bl_out(lcd_bl_out),
+        .lcd_dc_out(lcd_dc_out),
+        .lcd_clk_out(lcd_clk_out),
+        .lcd_data_out(lcd_data_out),
+        .lcd_cs_n_out(lcd_cs_n_out)
+    );
 
     assign awaking_de = awaking;
     assign touched_de = touched;

@@ -3,6 +3,16 @@ module animation_controller (
     input wire rst,
     input wire go,
 
+    input awaking,
+    input touched,
+    input expecting,
+    input petting,
+    input pressed,
+    input up,
+    input down,
+    input left,
+    input right,
+
     // for lcd screen
     output wire lcd_rst_n_out,
     output wire lcd_bl_out,
@@ -11,19 +21,6 @@ module animation_controller (
     output wire lcd_data_out,
     output wire lcd_cs_n_out
 );
-
-    parameter LCD_H = 162;
-    parameter LCD_W = 132;
-
-    parameter EXPRESSION = 0;
-    parameter SELECTION = 1;
-    parameter GAME = 2;
-
-    parameter IDLE = 0;
-    parameter HAPPY = 1;
-    parameter SATISFY = 2;
-    parameter SLEEP = 3;
-    parameter EXPECT = 4;
 
     wire [7:0] cnt_x;
     wire [7:0] cnt_y;
@@ -88,33 +85,118 @@ module animation_controller (
         .ram_data(ram_data_sleep)
     );
 
-    reg [3:0] state, next_state;
+    wire [15:0] ram_data_menu;
+    wire [1:0] mode; // 0 for game, 1 for potato, 2 for setting
+    menu menu_inst (
+        .clk(clk),
+        .rst(rst),
+        .ram_addr_x(cnt_x),
+        .ram_addr_y(cnt_y),
+        .right(right),
+        .left(left),
+        .mode(mode),
+        .ram_data(ram_data_menu)
+    );
+
+    parameter LCD_H = 162;
+    parameter LCD_W = 132;
+
+    parameter EXPRESSION = 0;
+    parameter MENU = 1;
+    parameter SETTING = 2;
+    parameter GAME = 3;
+    parameter POTATO = 4;
+
+    parameter IDLE = 0;
+    parameter HAPPY = 1;
+    parameter SATISFY = 2; // petting
+    parameter SLEEP = 3;
+    parameter EXPECT = 4;
+
+    reg [2:0] express, next_express;
+
+    reg [2:0] state, next_state;
+
     always @(posedge clk) begin
-        if(rst) state <= IDLE;
+        if(rst) express <= IDLE;
+        else express <= next_express;
+    end
+
+    always @(posedge clk) begin
+        if(rst) state <= EXPRESSION;
         else state <= next_state;
+    end
+
+
+    wire en_express;
+    wire en_menu;
+    wire ten_second_express;
+    wire ten_second_menu;
+    wire clk_27;
+    clock_divider #(.n(27)) clock_divider_inst (.clk(clk), .clk_div(clk_27));
+    ten_second_counter ten_second_counter_express (.clk(clk_27), .rst(rst), .en(en_express), .done(ten_second_express));
+    ten_second_counter ten_second_counter_menu (.clk(clk_27), .rst(rst), .en(en_menu), .done(ten_second_menu));
+
+
+    always @(*) begin
+        case (express)
+            IDLE: begin
+                if(ten_second_express) next_express <= SLEEP;
+                else if(expecting) next_express <= EXPRECT;
+                else if(touched) next_express <= HAPPY;
+                else next_express <= IDLE;
+                en_express <= 1;
+            end 
+            HAPPY: begin
+                if(!touched) next_express <= IDLE;
+                else next_express <= HAPPY;
+                en_express <= 0;
+            end
+            SATISFY: begin
+                if(!petting) next_express <= EXPECT;
+                else next_express <= SATISFY;
+                en_express <= 0;
+            end
+            SLEEP: begin
+                if(awaking) next_express <= IDLE;
+                else next_express <= SLEEP;
+                en_express <= 0;
+            end
+            EXPECT: begin
+                if(!expecting) next_express <= IDLE;
+                else next_express <= EXPECT;
+                en_express <= 0;
+            end
+            default: begin
+                next_express <= express;
+                en_express <= en_express;
+            end
+        endcase
     end
 
     always @(*) begin
         case (state)
-            IDLE: begin
-                if(go) next_state <= HAPPY;
-                else next_state <= IDLE;
+            EXPRESSION: begin
+                if(pressed) next_state <= MENU;
+                else next_state <= EXPRESSION;
             end
-            HAPPY: begin
-                if(go) next_state <= SATISFY;
-                else next_state <= HAPPY;
+            MENU: begin
+                if(mode == 0 && pressed) next_state <= GAME;
+                else if(mode == 1 && pressed) next_state <= POTATO;
+                else if(mode == 2 && pressed) next_state <= SETTING;
+                else next_state <= MENU; 
             end
-            SATISFY: begin
-                if(go) next_state <= SLEEP;
-                else next_state <= SATISFY;
+            SETTING: begin
+                if(pressed) next_state <= MENU;
+                else next_state <= SETTING;
             end
-            SLEEP: begin
-                if(go) next_state <= EXPECT;
-                else next_state <= SLEEP;
+            GAME: begin
+                if(pressed) next_state <= MENU;
+                else next_state <= GAME;
             end
-            EXPECT: begin
-                if(go) next_state <= IDLE;
-                else next_state <= EXPECT;
+            POTATO: begin
+                if(pressed) next_state <= MENU;
+                else next_state <= POTATO;
             end
             default: next_state <= state;
         endcase
@@ -122,12 +204,25 @@ module animation_controller (
 
     always @(*) begin
         case (state)
-            IDLE : ram_data <= ram_data_idle;
-            HAPPY: ram_data <= ram_data_happy;
-            SATISFY: ram_data <= ram_data_satisfy;
-            SLEEP: ram_data <= ram_data_sleep;
-            EXPECT: ram_data <= ram_data_expect;
-            default: ram_data <= 16'h0000;
+            EXPRESSION: begin
+                case (express)
+                    IDLE: ram_data = ram_data_idle;
+                    HAPPY: ram_data = ram_data_happy;
+                    SATISFY: ram_data = ram_data_satisfy;
+                    SLEEP: ram_data = ram_data_sleep;
+                    EXPECT: ram_data = ram_data_expect; 
+                    default: ram_data = ram_data;
+                endcase
+            end
+            MENU: begin
+                ram_data = ram_data_menu;
+            end
+            SETTING: begin
+                ram_data = 18'h1111;
+            end
+            GAME: begin
+                ram_data = 18'h5555;
+            end
         endcase
     end
 endmodule

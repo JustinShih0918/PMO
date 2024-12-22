@@ -1,12 +1,12 @@
 from PIL import Image
 import sys
 
-image_path = 'idle/idle_use.jpg'  # Replace with your image file name
+image_path = 'menu/menu-Sheet.png'  # Replace with your image file name
 
 img = Image.open(image_path)
 
-# Resize the image to 44x(54*16)
-img = img.resize((44, 54 * 16))
+# # Resize the image to 44x(54*16)
+# img = img.resize((44, 54 * 16))
 
 # Convert the image to RGB
 img = img.convert('RGB')
@@ -19,9 +19,9 @@ def rgb_to_16bit(r, g, b):
     return (r_5bit << 11) | (g_6bit << 5) | b_5bit
 
 # Open the output file
-output_file = 'image_data.txt'
+output_file = 'menu-data.txt'
 with open(output_file, 'w') as f:
-    for block in range(16):  # Process each block of 54 lines
+    for block in range(4):  # Process each block of 54 lines
         f.write(f'parameter [15:0] step{block} [0:2375] = {{\n')
         for y in range(54):
             line_data = []
