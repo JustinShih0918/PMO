@@ -130,8 +130,8 @@ module gyro_top (
 						.x_axis_data(x_axis_data),
 						.y_axis_data(y_axis_data),
 						.z_axis_data(z_axis_data),
-						.x_data(x_axis_data),
-						.y_data(y_axis_data),
-						.z_data(z_axis_data)
+						.x_data(x_data),
+						.y_data(y_data),
+						.z_data(z_data)
 			);
 endmodule

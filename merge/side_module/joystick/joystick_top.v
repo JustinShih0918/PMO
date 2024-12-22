@@ -78,8 +78,8 @@ module joystick_top(
 			);
 
 			ClkDiv_5Hz genSndRec(
-					.CLK(CLK),
-					.RST(RST),
+					.CLK(clk),
+					.RST(rst),
 					.CLKOUT(sndRec)
 			);
 			
