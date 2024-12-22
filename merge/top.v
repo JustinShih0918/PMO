@@ -88,7 +88,7 @@ module top (
         .rst(rst_op),
         .Echo(Echo),
         .Trig(Trig),
-        .expecting(expecting)
+        .expecting(expecting),
         .petting(petting)
     );
 
