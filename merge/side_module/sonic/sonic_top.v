@@ -1,8 +1,9 @@
-module sonic_top(clk, rst, Echo, Trig, expecting);
+module sonic_top(clk, rst, Echo, Trig, expecting, petting);
 	input clk, rst, Echo;
 	output Trig; // should connect to the sonic sensor
     // output [19:0] distance; // output the distance in cm
     output expecting;
+    output petting;
 
 	wire[19:0] dis;
     wire clk1M;
@@ -11,7 +12,8 @@ module sonic_top(clk, rst, Echo, Trig, expecting);
     wire [19:0] distance;
     assign distance = dis;
 
-    assign expecting = (dis < 20'd20) ? 1 : 0;
+    assign petting = (distance < 20'b0000_0000_0001_1111_1111) ? 1'b1 : 1'b0;
+    assign expecting = (distance < 20'b0000_0000_0100_1111_1111) ? 1'b1 : 1'b0;
 
     div clk1(clk ,clk1M);
 	TrigSignal u1(.clk(clk), .rst(rst), .trig(Trig));

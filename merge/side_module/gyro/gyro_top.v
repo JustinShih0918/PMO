@@ -122,5 +122,16 @@ module gyro_top (
 			);
 			//  Assign slave select output
 			assign gyro_ss = slave_select;
-			assign awaking = (x_axis_data > 16'd50 || y_axis_data > 16'd50 || z_axis_data > 16'd50) ? 1 : 0;
+			wire [15:0] x_data;
+			wire [15:0] y_data;
+			wire [15:0] z_data;
+			assign awaking = (x_data[11] == 1 || y_data[11] == 1 || z_data[11] == 1) ? 1 : 0;
+			data_transform trans(
+						.x_axis_data(x_axis_data),
+						.y_axis_data(y_axis_data),
+						.z_axis_data(z_axis_data),
+						.x_data(x_axis_data),
+						.y_data(y_axis_data),
+						.z_data(z_axis_data)
+			);
 endmodule

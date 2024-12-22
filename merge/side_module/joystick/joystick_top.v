@@ -76,34 +76,21 @@ module joystick_top(
 					.MOSI(joystick_MOSI),
 					.DOUT(jstkData)
 			);
+
+			ClkDiv_5Hz genSndRec(
+					.CLK(CLK),
+					.RST(RST),
+					.CLKOUT(sndRec)
+			);
 			
-			
-			// one_pulse pressed_pulse(
-			// 	.clk(clk),
-			// 	.pb_in(jstkData[0]),
-			// 	.pb_out(pressed)
-			// );
 			assign pressed = jstkData[0];
-
-			// select direction
-			wire up_pb, down_pb, left_pb, right_pb;
-			// one_pulse up_pulse(.clk(clk), .pb_in(up_pb), .pb_out(up));
-			// one_pulse down_pulse(.clk(clk), .pb_in(down_pb), .pb_out(down));
-			// one_pulse left_pulse(.clk(clk), .pb_in(left_pb), .pb_out(left));
-			// one_pulse right_pulse(.clk(clk), .pb_in(right_pb), .pb_out(right));
-			assign up = up_pb;
-			assign down = down_pb;
-			assign left = left_pb;
-			assign right = right_pb;
-
-			// X
-			assign right_pb = ({jstkData[9:8],jstkData[23:16]} > 10'd800) ? 1'b1 : 1'b0;
-			assign left_pb = ({jstkData[9:8],jstkData[23:16]} < 8'd200) ? 1'b1 : 1'b0;
-
-			// Y
-			assign up_pb = ({jstkData[25:24],jstkData[39:32]} > 10'd800) ? 1'b1 : 1'b0;
-			assign down_pb = ({jstkData[25:24],jstkData[39:32]} < 8'd200) ? 1'b1 : 1'b0;
 			
+			wire [9:0] posData_x = {jstkData[25:24], jstkData[39:32]};
+			wire [9:0] posData_y = {jstkData[9:8], jstkData[23:16]};
+			assign right = (posData_x > 10'd800) ? 1'b1 : 1'b0;
+			assign left = (posData_x < 10'd200) ? 1'b1 : 1'b0;
+			assign up = (posData_y > 10'd800) ? 1'b1 : 1'b0;
+			assign down = (posData_y < 10'd200) ? 1'b1 : 1'b0;
 
 			// Data to be sent to PmodJSTK, lower two bits will turn on leds on PmodJSTK
 			assign sndData = {8'b100000, 2'b00};

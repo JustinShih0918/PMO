@@ -35,6 +35,7 @@ module top (
     output wire awaking_de,
     output wire touched_de,
     output wire expecting_de,
+    output wire petting_de,
     output wire pressed_de,
     output wire up_de,
     output wire down_de,
@@ -81,12 +82,14 @@ module top (
 
     // sonic_top
     wire expecting;
+    wire petting;
     sonic_top sonic_top_inst (
         .clk(clk),
         .rst(rst_op),
         .Echo(Echo),
         .Trig(Trig),
         .expecting(expecting)
+        .petting(petting)
     );
 
     // joystich_top
@@ -129,6 +132,7 @@ module top (
     assign awaking_de = awaking;
     assign touched_de = touched;
     assign expecting_de = expecting;
+    assign petting_de = petting;
     assign pressed_de = pressed;
     assign up_de = up;
     assign down_de = down;
