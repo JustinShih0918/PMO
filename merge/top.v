@@ -116,12 +116,12 @@ module top (
     one_pulse one_pulse_left (.clk(clk), .pb_in(left), .pb_out(left_op));
     one_pulse one_pulse_right (.clk(clk), .pb_in(right), .pb_out(right_op));
 
-    screen_top
+    //screen_top
     screen_top screen_top_inst (
         .clk(clk),
         .rst(rst_op),
         .go(go_op),
-        .awaking(awaking_op),
+        .awaking(awaking),
         .touched(touched),
         .expecting(expecting),
         .petting(petting),

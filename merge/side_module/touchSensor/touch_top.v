@@ -5,9 +5,9 @@ module touch_top (
     input wire touch2,
     output wire touched
 );
-    assign touched = touched1 & touched2;
 
     wire touched1, touched2;
+    assign touched = touched1 & touched2;
     touch1 touch1_inst (
         .clk(clk),
         .rst(rst),

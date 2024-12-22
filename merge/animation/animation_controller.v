@@ -128,8 +128,8 @@ module animation_controller (
     end
 
 
-    wire en_express;
-    wire en_menu;
+    reg en_express;
+    reg en_menu;
     wire ten_second_express;
     wire ten_second_menu;
     wire clk_27;
@@ -139,39 +139,45 @@ module animation_controller (
 
 
     always @(*) begin
-        case (express)
-            IDLE: begin
-                if(ten_second_express) next_express <= SLEEP;
-                else if(expecting) next_express <= EXPRECT;
-                else if(touched) next_express <= HAPPY;
-                else next_express <= IDLE;
-                en_express <= 1;
-            end 
-            HAPPY: begin
-                if(!touched) next_express <= IDLE;
-                else next_express <= HAPPY;
-                en_express <= 0;
-            end
-            SATISFY: begin
-                if(!petting) next_express <= EXPECT;
-                else next_express <= SATISFY;
-                en_express <= 0;
-            end
-            SLEEP: begin
-                if(awaking) next_express <= IDLE;
-                else next_express <= SLEEP;
-                en_express <= 0;
-            end
-            EXPECT: begin
-                if(!expecting) next_express <= IDLE;
-                else next_express <= EXPECT;
-                en_express <= 0;
-            end
-            default: begin
-                next_express <= express;
-                en_express <= en_express;
-            end
-        endcase
+        if(state == EXPRESSION) begin
+            next_express <= express;
+            case (express)
+                IDLE: begin
+                    if(ten_second_express) next_express <= SLEEP;
+                    else if(expecting) next_express <= EXPECT;
+                    else if(touched || go) next_express <= HAPPY;
+                    else next_express <= IDLE;
+                    en_express <= 1;
+                end 
+                HAPPY: begin
+                    if(go || !touched) next_express <= IDLE;
+                    else next_express <= HAPPY;
+                    en_express <= 0;
+                end
+                SATISFY: begin
+                    if(!petting) next_express <= EXPECT;
+                    else next_express <= SATISFY;
+                    en_express <= 0;
+                end
+                SLEEP: begin
+                    if(awaking) next_express <= IDLE;
+                    else next_express <= SLEEP;
+                    en_express <= 0;
+                end
+                EXPECT: begin
+                    if(!expecting || pressed) next_express <= IDLE;
+                    else if(petting) next_express <= SATISFY;
+                    else next_express <= EXPECT;
+                    en_express <= 0;
+                end
+                default: begin
+                    next_express <= express;
+                    en_express <= en_express;
+                end
+            endcase
+        end
+        else en_express <= 0;
+       
     end
 
     always @(*) begin
@@ -179,26 +185,35 @@ module animation_controller (
             EXPRESSION: begin
                 if(pressed) next_state <= MENU;
                 else next_state <= EXPRESSION;
+                en_menu <= 0;
             end
             MENU: begin
-                if(mode == 0 && pressed) next_state <= GAME;
+                if(ten_second_menu) next_state <= EXPRESSION;
+                else if(mode == 0 && pressed) next_state <= GAME;
                 else if(mode == 1 && pressed) next_state <= POTATO;
                 else if(mode == 2 && pressed) next_state <= SETTING;
                 else next_state <= MENU; 
+                en_menu <= 1;
             end
             SETTING: begin
                 if(pressed) next_state <= MENU;
                 else next_state <= SETTING;
+                en_menu <= 0;
             end
             GAME: begin
                 if(pressed) next_state <= MENU;
                 else next_state <= GAME;
+                en_menu <= 0;
             end
             POTATO: begin
                 if(pressed) next_state <= MENU;
                 else next_state <= POTATO;
+                en_menu <= 0;
             end
-            default: next_state <= state;
+            default: begin
+                next_state <= state;
+                en_menu <= en_menu;
+            end
         endcase
     end
 
