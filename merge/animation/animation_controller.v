@@ -99,13 +99,22 @@ module animation_controller (
     );
 
     wire [15:0] ram_data_potato;
+    wire [15:0] ram_data_setting;
     wire finish_count;
     reg start_potato;
-    reg cnt_mode;
-    always @(posedge clk) begin
-        if(rst) cnt_mode <= 0;
-        else if(go) cnt_mode <= ~cnt_mode; 
-    end
+    reg start_setting;
+    reg start_gaming;
+    wire cnt_mode;
+    setting setting_inst (
+        .clk(clk),
+        .rst(rst),
+        .start(start_setting),
+        .pressed(pressed),
+        .ram_addr_x(cnt_x),
+        .ram_addr_y(cnt_y),
+        .cnt_mode(cnt_mode),
+        .ram_data(ram_data_setting)
+    );
 
     potato potato_inst (
         .clk(clk),
@@ -213,6 +222,8 @@ module animation_controller (
                 else next_state <= EXPRESSION;
                 en_menu <= 0;
                 start_potato <= 0;
+                start_setting <= 0;
+                start_gaming <= 0;
             end
             MENU: begin
                 if(ten_second_menu) next_state <= EXPRESSION;
@@ -222,30 +233,40 @@ module animation_controller (
                 else next_state <= MENU; 
                 en_menu <= 1;
                 start_potato <= 0;
+                start_setting <= 0;
+                start_gaming <= 0;
             end
             SETTING: begin
                 if(pressed) next_state <= MENU;
                 else next_state <= SETTING;
                 en_menu <= 0;
                 start_potato <= 0;
+                start_setting <= 1;
+                start_gaming <= 0;
             end
             GAME: begin
                 if(pressed) next_state <= MENU;
                 else next_state <= GAME;
                 en_menu <= 0;
                 start_potato <= 0;
+                start_setting <= 0;
+                start_gaming <= 1;
             end
             POTATO: begin
                 if(finish_count) next_state <= FINISH;
                 else next_state <= POTATO;
                 en_menu <= 0;
                 start_potato <= 1;
+                start_setting <= 0;
+                start_gaming <= 0;
             end
             FINISH: begin
                 if(ten_second_menu) next_state <= MENU;
                 else next_state <= FINISH;
                 en_menu <= 1;
                 start_potato <= 0;
+                start_setting <= 0;
+                start_gaming <= 0;
             end
             default: begin
                 next_state <= state;
@@ -271,7 +292,7 @@ module animation_controller (
                 ram_data = ram_data_menu;
             end
             SETTING: begin
-                ram_data = 18'h1111;
+                ram_data = ram_data_setting;
             end
             GAME: begin
                 ram_data = 18'h5555;
