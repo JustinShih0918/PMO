@@ -135,18 +135,18 @@ set_property PACKAGE_PIN T18 [get_ports go]
 # Sch name = JA4
  set_property PACKAGE_PIN G2 [get_ports {joystick_SCLK}]
     set_property IOSTANDARD LVCMOS33 [get_ports {joystick_SCLK}]
-# Sch name = JA7
- set_property PACKAGE_PIN H1 [get_ports {gyro_ss}]
-    set_property IOSTANDARD LVCMOS33 [get_ports {gyro_ss}]
-# Sch name = JA8
- set_property PACKAGE_PIN K2 [get_ports {gyro_MOSI}]
-    set_property IOSTANDARD LVCMOS33 [get_ports {gyro_MOSI}]
-# Sch name = JA9
-set_property PACKAGE_PIN H2 [get_ports {gyro_MISO}]
-   set_property IOSTANDARD LVCMOS33 [get_ports {gyro_MISO}]
-# Sch name = JA10
-set_property PACKAGE_PIN G3 [get_ports {gyro_SCLK}]
-   set_property IOSTANDARD LVCMOS33 [get_ports {gyro_SCLK}]
+# # Sch name = JA7
+#  set_property PACKAGE_PIN H1 [get_ports {gyro_ss}]
+#     set_property IOSTANDARD LVCMOS33 [get_ports {gyro_ss}]
+# # Sch name = JA8
+#  set_property PACKAGE_PIN K2 [get_ports {gyro_MOSI}]
+#     set_property IOSTANDARD LVCMOS33 [get_ports {gyro_MOSI}]
+# # Sch name = JA9
+# set_property PACKAGE_PIN H2 [get_ports {gyro_MISO}]
+#    set_property IOSTANDARD LVCMOS33 [get_ports {gyro_MISO}]
+# # Sch name = JA10
+# set_property PACKAGE_PIN G3 [get_ports {gyro_SCLK}]
+#    set_property IOSTANDARD LVCMOS33 [get_ports {gyro_SCLK}]
 
 
 
@@ -183,17 +183,17 @@ set_property PACKAGE_PIN A15 [get_ports {lcd_cs_n_out}]
 set_property PACKAGE_PIN K17 [get_ports {touch1}]
    set_property IOSTANDARD LVCMOS33 [get_ports {touch1}]
 # Sch name = JC2
-set_property PACKAGE_PIN M18 [get_ports {touch2}]
-   set_property IOSTANDARD LVCMOS33 [get_ports {touch2}]
+# set_property PACKAGE_PIN M18 [get_ports {touch2}]
+#    set_property IOSTANDARD LVCMOS33 [get_ports {touch2}]
 # Sch name = JC3
 set_property PACKAGE_PIN N17 [get_ports {Echo}]
    set_property IOSTANDARD LVCMOS33 [get_ports {Echo}]
 # Sch name = JC4
 set_property PACKAGE_PIN P18 [get_ports {Trig}]
    set_property IOSTANDARD LVCMOS33 [get_ports {Trig}]
-# # Sch name = JC7
-# set_property PACKAGE_PIN L17 [get_ports {JC[4]}]
-#    set_property IOSTANDARD LVCMOS33 [get_ports {JC[4]}]
+# Sch name = JC7
+set_property PACKAGE_PIN L17 [get_ports {touch2}]
+   set_property IOSTANDARD LVCMOS33 [get_ports {touch2}]
 # # Sch name = JC8
 # set_property PACKAGE_PIN M19 [get_ports {JC[5]}]
 #    set_property IOSTANDARD LVCMOS33 [get_ports {JC[5]}]
@@ -219,18 +219,18 @@ set_property PACKAGE_PIN P18 [get_ports {Trig}]
 # set_property PACKAGE_PIN N2 [get_ports {gyro_SCLK}]
 #   set_property IOSTANDARD LVCMOS33 [get_ports {gyro_SCLK}]
 #   set_property PULLUP true [get_ports ble_rx]
-# # Sch name = XA1_N
-# set_property PACKAGE_PIN K3 [get_ports {Echo}]
-#    set_property IOSTANDARD LVCMOS33 [get_ports {Echo}]
-# # Sch name = XA2_N
-# set_property PACKAGE_PIN M3 [get_ports {Trig}]
-#    set_property IOSTANDARD LVCMOS33 [get_ports {Trig}]
-## Sch name = XA3_N
-# set_property PACKAGE_PIN M1 [get_ports {JXADC[6]}]
-#    set_property IOSTANDARD LVCMOS33 [get_ports {JXADC[6]}]
-## Sch name = XA4_N
-# set_property PACKAGE_PIN N1 [get_ports {JXADC[7]}]
-#    set_property IOSTANDARD LVCMOS33 [get_ports {JXADC[7]}]
+# Sch name = XA1_N
+set_property PACKAGE_PIN K3 [get_ports {gyro_ss}]
+   set_property IOSTANDARD LVCMOS33 [get_ports {gyro_ss}]
+# Sch name = XA2_N
+set_property PACKAGE_PIN M3 [get_ports {gyro_MOSI}]
+   set_property IOSTANDARD LVCMOS33 [get_ports {gyro_MOSI}]
+# Sch name = XA3_N
+set_property PACKAGE_PIN M1 [get_ports {gyro_MISO}]
+   set_property IOSTANDARD LVCMOS33 [get_ports {gyro_MISO}]
+# Sch name = XA4_N
+set_property PACKAGE_PIN N1 [get_ports {gyro_SCLK}]
+   set_property IOSTANDARD LVCMOS33 [get_ports {gyro_SCLK}]
 
 
 

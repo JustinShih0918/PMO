@@ -7,7 +7,7 @@ module touch_top (
 );
 
     wire touched1, touched2;
-    assign touched = touched1 & touched2;
+    assign touched = (touched1 && touched2) ? 1 : 0;
     touch1 touch1_inst (
         .clk(clk),
         .rst(rst),
@@ -20,6 +20,6 @@ module touch_top (
         .rst(rst),
         .touch(touch2),
         .touched2(touched2)
-);
+    );
     
 endmodule
