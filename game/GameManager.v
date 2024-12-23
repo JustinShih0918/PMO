@@ -1,11 +1,5 @@
 `timescale 1ns / 1ps
 `define DARK 5'd31
-`define R_PLAYER 5'd10
-`define G_PLAYER 5'd11
-`define B_PLAYER 5'd12
-`define R_BULLET 5'd13
-`define G_BULLET 5'd14
-`define B_BULLET 5'd15
 
 /* TODO:
  * 1. control the game flow: init, game, finish
@@ -35,6 +29,7 @@ module GameManager(
     output [39:0] Row6, // enpty area
     output [39:0] Row7, // empty area
     output [39:0] Row8,  // player
+    output finish,
 
     // for debugging
     output [15:0] led
@@ -43,22 +38,16 @@ module GameManager(
 // ============================================================================== 
 // 							    wire and reg
 // ==============================================================================
-
-// [Main: state]
-reg [1:0] state, next_state;
-parameter INIT = 0;
-parameter GAME = 1;
-parameter FINISH = 2;
-
 // [Bubble]
-wire bubbleFull;
+wire [6:0] popCnt;
 
 // [Player]
 wire [2:0] player_pos;
 
 // [Score]
 wire scoreAchieve;
-wire result = ((!bubbleFull) && (scoreAchieve));
+assign scoreAchieve = (popCnt >= 40) ? 1 : 0;
+assign led[15] = scoreAchieve;
 
 // [dclk]
 wire dclk;
@@ -79,8 +68,7 @@ BubbleManager BubbleManager_inst (
     .BubbleRow2(Row3),
     .BubbleRow3(Row4),
     .BubbleRow4(Row5),
-    .bubbleFull(bubbleFull),
-    .check_led(led[15:9])
+    .popCnt(popCnt)
 );
 
 // [Player]
@@ -98,55 +86,15 @@ PlayerManager PlayerManager_inst (
 // [Score]
 
 // [dclk]
-clock_divider #(.n(25)) clock_divider_inst (.clk(clk), .clk_div(dclk));
-
-// ==============================================================================
-// 							    state update
-// ==============================================================================
-
-always @(posedge clk) begin
-    if(rst) begin
-        state <= INIT;
-    end
-    else begin
-        state <= next_state;
-    end
-end
-
-// ==============================================================================
-// 							    state transition
-// ==============================================================================
-
-always @(*) begin
-    next_state = state;
-    case(state)
-        INIT: begin
-            if(en) next_state = GAME;
-        end
-        GAME: begin
-            if(bubbleFull || scoreAchieve) next_state = FINISH;
-        end
-        FINISH: begin
-            if(en) next_state = INIT;
-        end
-        default: next_state = state;
-    endcase
-end
+clock_divider #(.n(28)) clock_divider_inst (.clk(clk), .clk_div(dclk));
 
 // ==============================================================================
 // 							    output: Row1 ~ Row8
 // ==============================================================================
 
-// [Row1: score]
-// TODO: display score
 assign Row1 = {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK};
-
-// [Row2 ~ Row5: bubbles]
-
-// [Row6 ~ Row7: empty area]
 assign Row6 = {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK};
 assign Row7 = {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK};
 
-// [Row8: player]
     
 endmodule

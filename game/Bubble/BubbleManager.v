@@ -16,18 +16,19 @@ module BubbleManager(
     output reg [39:0] BubbleRow2,
     output reg [39:0] BubbleRow3,
     output reg [39:0] BubbleRow4,
-    output wire bubbleFull,
-    output wire [7:0] check_led
+    output reg [6:0] popCnt
 );
 
 // ==============================================================================
 // 							    wire and reg
 // ==============================================================================
+parameter [2:0] data_length = 5;
+
 // [state]
 parameter POPPING = 0;
 parameter FALLING = 1;
-reg [1:0] state, next_state;
 
+reg [1:0] state, next_state;
 reg [39:0] fallingRow1, fallingRow2, fallingRow3, fallingRow4;
 
 // [dclk]
@@ -38,21 +39,20 @@ wire dclk_edge;
 parameter [4:0] r_bubble = 16;
 parameter [4:0] g_bubble = 17;
 parameter [4:0] b_bubble = 18;
-parameter [2:0] data_length = 5;
+
 reg [39:0] bubbleGen;
 reg [39:0] nextBubbleRow1, nextBubbleRow2, nextBubbleRow3, nextBubbleRow4;
-reg [6:0] idx; // iterator to check if bubble gen num is valid
+reg [6:0] idx, idx_i, idx_j; // iterator to check if bubble gen num is valid
 reg [39:0] popRow1, popRow2, popRow3, popRow4;
+reg [4:0] targetColor;
 
-assign bubbleFull = BubbleRow4 != {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK };
+reg [6:0] next_popCnt;
 
 // [RandomNum]
 reg enabler;
 reg [4:0] randomBubble;
-wire [1:0] randomNum;
 
-// for debugging
-assign check_led = (jstkPress) ? !check_led : check_led;
+wire [1:0] randomNum;
 
 // ==============================================================================
 // 							    module instance
@@ -189,8 +189,43 @@ end
 // ==============================================================================
 // 							    Bubble Pop
 // ==============================================================================
-// testing version
+// [score counter]
+always @(posedge clk) begin
+    if(rst) begin
+        popCnt <= 7'd0;
+    end
+    else begin
+        popCnt <= next_popCnt;
+    end
+end
+
 always @(*) begin
+    idx_j = shoot_pos * data_length;
+    targetColor = BubbleRow4[idx_j +: data_length];
+end
+
+always @(*) begin
+    popRow1 = BubbleRow1;
+    popRow2 = BubbleRow2;
+    popRow3 = BubbleRow3;
+end
+
+always @(*) begin
+    next_popCnt = popCnt;
+    for(idx_i = 0; idx_i <= 39; idx_i = idx_i + 5) begin
+        if(BubbleRow4[idx_i +: data_length] == targetColor) begin
+            popRow4[idx_i +: data_length] = `DARK;
+            if (popCnt < 127) next_popCnt = popCnt + 1;
+            else next_popCnt = popCnt;
+        end
+        else begin
+            popRow4[idx_i +: data_length] = BubbleRow4[idx_i +: data_length];
+        end
+    end
+end
+
+// testing version
+/*always @(*) begin
     for(idx = 0; idx <= 39; idx = idx + 5) begin
         if(idx == shoot_pos*data_length) begin
             popRow1[idx +: data_length] = `DARK;
@@ -205,7 +240,7 @@ always @(*) begin
             popRow4[idx +: data_length] = BubbleRow4[idx +: data_length];
         end
     end
-end
+end*/
 
 // ==============================================================================
 // 							    Bubble Generation
