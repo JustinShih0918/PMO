@@ -29,7 +29,7 @@ module GameManager(
     output [39:0] Row6, // enpty area
     output [39:0] Row7, // empty area
     output [39:0] Row8,  // player
-    output finish,
+    output reg finished,
 
     // for debugging
     output [15:0] led
@@ -39,18 +39,18 @@ module GameManager(
 // 							    wire and reg
 // ==============================================================================
 // [Bubble]
-wire [6:0] popCnt;
 
 // [Player]
 wire [2:0] player_pos;
 
 // [Score]
-wire scoreAchieve;
-assign scoreAchieve = (popCnt >= 40) ? 1 : 0;
-assign led[15] = scoreAchieve;
 
 // [dclk]
 wire dclk;
+
+// [game counter]
+reg [5:0] game_counter, next_game_counter;
+assign led[15] = finished;
 
 // ==============================================================================
 // 							    module instance
@@ -61,14 +61,13 @@ BubbleManager BubbleManager_inst (
     .clk(clk),
     .dclk(dclk),
     .rst(rst),
-    .en(en),
+    .en(1),
     .jstkPress(jstkPress),
     .shoot_pos(player_pos),
     .BubbleRow1(Row2),
     .BubbleRow2(Row3),
     .BubbleRow3(Row4),
-    .BubbleRow4(Row5),
-    .popCnt(popCnt)
+    .BubbleRow4(Row5)
 );
 
 // [Player]
@@ -76,7 +75,7 @@ PlayerManager PlayerManager_inst (
     .clk(clk),
     .dclk(dclk),
     .rst(rst),
-    .en(en),
+    .en(1),
     .jstkPos(jstkPos),
     .PlayerRow(Row8),
     .player_pos(player_pos),
@@ -87,6 +86,33 @@ PlayerManager PlayerManager_inst (
 
 // [dclk]
 clock_divider #(.n(28)) clock_divider_inst (.clk(clk), .clk_div(dclk));
+
+// ==============================================================================
+// 							    finished
+// ==============================================================================
+
+always @(posedge clk) begin
+    if(rst) begin
+        game_counter <= 0;
+        finished <= 0;
+    end else begin
+        if(game_counter >= 15) begin
+            game_counter <= 0;
+            finished <= 1;
+        end else begin
+            game_counter <= next_game_counter;
+            finished <= 0;
+        end
+    end
+end
+
+always @(posedge dclk) begin
+    if(rst) begin
+        next_game_counter <= 0;
+    end else begin
+        next_game_counter <= game_counter + 1;
+    end
+end
 
 // ==============================================================================
 // 							    output: Row1 ~ Row8
