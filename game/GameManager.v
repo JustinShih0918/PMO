@@ -34,7 +34,10 @@ module GameManager(
     output [39:0] Row5, // bubbles row 4
     output [39:0] Row6, // enpty area
     output [39:0] Row7, // empty area
-    output [39:0] Row8  // player
+    output [39:0] Row8,  // player
+
+    // for debugging
+    output [15:0] led
 );
 
 // ============================================================================== 
@@ -77,6 +80,16 @@ BubbleManager BubbleManager_inst (
 );
 
 // [Player]
+PlayerManager PlayerManager_inst (
+    .clk(clk),
+    .dclk(dclk),
+    .rst(rst),
+    .en(en),
+    .jstkPos(jstkPos),
+    .jstkPress(jstkPress),
+    .PlayerRow(Row8),
+    .pos_led(led[8:0])
+);
 
 // [Score]
 
@@ -112,6 +125,7 @@ always @(*) begin
         FINISH: begin
             if(en) next_state = INIT;
         end
+        default: next_state = state;
     endcase
 end
 
@@ -130,7 +144,5 @@ assign Row6 = {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK};
 assign Row7 = {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK};
 
 // [Row8: player]
-// TODO: display player
-assign Row8 = {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK};
     
 endmodule

@@ -61,6 +61,7 @@ always @(*) begin
         for(idx_j = 0; idx_j <= 39; idx_j = idx_j + 5) begin
             one_data = concate_row[idx_i][idx_j +: 5];
             case(one_data)
+                10: grid_table[idx_j / 5 + idx_i*8] = playerR;
                 16: grid_table[idx_j / 5 + idx_i*8] = bubbleR;
                 17: grid_table[idx_j / 5 + idx_i*8] = bubbleG;
                 18: grid_table[idx_j / 5 + idx_i*8] = bubbleB;

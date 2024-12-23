@@ -20,6 +20,7 @@ module BubbleManager(
 // ==============================================================================
 // 							    wire and reg
 // ==============================================================================
+
 // [Bubble]
 parameter [4:0] r_bubble = 16;
 parameter [4:0] g_bubble = 17;
@@ -54,10 +55,10 @@ randomNum randomNum_inst (
 // 							    logic
 // ==============================================================================
 
-// [Bubble update]
+// [Bubble Row Update]
 always @(posedge clk) begin
     if(rst) begin
-        BubbleRow1 <= { r_bubble, g_bubble, b_bubble, r_bubble, g_bubble, b_bubble, r_bubble, g_bubble };
+        BubbleRow1 <= { r_bubble, r_bubble, b_bubble, b_bubble, b_bubble, b_bubble, g_bubble, g_bubble };
         BubbleRow2 <= {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK };
         BubbleRow3 <= {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK };
         BubbleRow4 <= {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK };
