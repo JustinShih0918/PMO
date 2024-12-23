@@ -2,7 +2,7 @@ module setting (
     input wire clk,
     input wire rst,
     input wire start,
-    input wire pressed,
+    input wire up,
     input wire [7:0] ram_addr_x,
     input wire [7:0] ram_addr_y,
     output reg cnt_mode,
@@ -20,7 +20,7 @@ module setting (
 
     always @(posedge clk) begin
         if(rst) cnt_mode <= 0;
-        else if(pressed && start) cnt_mode <= ~cnt_mode;
+        else if(up && start) cnt_mode <= ~cnt_mode;
     end
 
     

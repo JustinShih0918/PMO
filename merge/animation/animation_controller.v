@@ -109,7 +109,7 @@ module animation_controller (
         .clk(clk),
         .rst(rst),
         .start(start_setting),
-        .pressed(pressed),
+        .up(up),
         .ram_addr_x(cnt_x),
         .ram_addr_y(cnt_y),
         .cnt_mode(cnt_mode),

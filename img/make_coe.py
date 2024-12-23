@@ -2,9 +2,9 @@ import os
 from PIL import Image
 
 # Define paths
-base_path = r"D:\Justin\HardwareDesign_workspace\PMO\img\numbers\ver2"
-image_path = os.path.join(base_path, 'colon_white.png')
-output_path = os.path.join(base_path, 'colon_white.coe')
+base_path = r"D:\Justin\HardwareDesign_workspace\PMO\img\setting"
+image_path = os.path.join(base_path, 'switch1.png')
+output_path = os.path.join(base_path, 'switch1.coe')
 
 def rgb_to_16bit(r, g, b):
     r_5bit = (r >> 3) & 0x1F
@@ -14,7 +14,7 @@ def rgb_to_16bit(r, g, b):
 
 # Open and process image
 img = Image.open(image_path).convert('RGB')  # Convert to RGB mode
-width, height = 55, 6  # Set expected dimensions
+width, height = 44, 54  # Set expected dimensions
 
 # Create COE file
 with open(output_path, 'w') as f:

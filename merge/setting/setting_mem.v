@@ -9,7 +9,7 @@ module setting_mem (
 
     wire [15:0] data_plus;
     wire [15:0] data_minus;
-    wire [15:0] pixel_addr;
+    wire [11:0] pixel_addr;
     blk_mem_gen_4 blk_mem_gen_4_inst(
         .clka(clk),
         .wea(1'b0),
@@ -31,7 +31,7 @@ module setting_mem (
     assign pixel_addr = ((ram_addr_x/3) % IMG_WIDTH + (ram_addr_y/3) * IMG_WIDTH) % (IMG_HEIGHT * IMG_WIDTH);
 
     always @(*) begin
-        if(cnt_mode == 1'b0) ram_data <= data_plus;
-        else ram_data <= data_minus;
+        if(cnt_mode == 1'b0) ram_data <= data_minus;
+        else ram_data <= data_plus;
     end
 endmodule
