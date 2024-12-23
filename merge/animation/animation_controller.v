@@ -98,6 +98,23 @@ module animation_controller (
         .ram_data(ram_data_menu)
     );
 
+    wire [15:0] ram_data_potato;
+    wire finish_count;
+    potato potato_inst (
+        .clk(clk),
+        .rst(rst),
+        .up(up),
+        .down(down),
+        .left(left),
+        .right(right),
+        .mode(0),
+        .pressed(pressed),
+        .ram_addr_x(cnt_x),
+        .ram_addr_y(cnt_y),
+        .finish(finish_count),
+        .ram_data(ram_data_potato)
+    );
+
     parameter LCD_H = 162;
     parameter LCD_W = 132;
 
@@ -237,6 +254,12 @@ module animation_controller (
             end
             GAME: begin
                 ram_data = 18'h5555;
+            end
+            POTATO: begin
+                ram_data = ram_data_potato;
+            end
+            default: begin
+                ram_data = ram_data;
             end
         endcase
     end
