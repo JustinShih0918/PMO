@@ -21,14 +21,20 @@ wire [39:0] Row1, Row2, Row3, Row4, Row5, Row6, Row7, Row8;
 
 // for testing
 wire [3:0] db_jstk_pos, op_jstk_pos;
+wire db_jstk_press, op_jstk_press;
 debounce db1(db_jstk_pos[0], jstkPos[0], clk);
 debounce db2(db_jstk_pos[1], jstkPos[1], clk);
 debounce db3(db_jstk_pos[2], jstkPos[2], clk);
 debounce db4(db_jstk_pos[3], jstkPos[3], clk);
+
+debounce db5(db_jstk_press, jstkPress, clk);
+
 one_pulse op1(clk, db_jstk_pos[0], op_jstk_pos[0]);
 one_pulse op2(clk, db_jstk_pos[1], op_jstk_pos[1]);
 one_pulse op3(clk, db_jstk_pos[2], op_jstk_pos[2]);
 one_pulse op4(clk, db_jstk_pos[3], op_jstk_pos[3]);
+
+one_pulse op5(clk, db_jstk_press, op_jstk_press);
 // for testing end
 
 GameManager GameManager_inst (
@@ -36,7 +42,7 @@ GameManager GameManager_inst (
     .rst(rst),
     .en(en),
     .jstkPos(op_jstk_pos),
-    .jstkPress(jstkPress),
+    .jstkPress(op_jstk_press),
     .Row1(Row1),
     .Row2(Row2),
     .Row3(Row3),

@@ -11,8 +11,8 @@ module PlayerManager(
     input rst,
     input en,
     input [3:0] jstkPos,
-    input jstkPress,
     output reg [39:0] PlayerRow,
+    output reg [2:0] player_pos,
     
     // for debugging
     output reg [8:0] pos_led
@@ -27,7 +27,7 @@ parameter [4:0] b_player = 12;
 parameter [2:0] data_length = 5;
 
 reg [39:0] nextPlayerRow;
-reg [2:0] player_pos, next_player_pos;
+reg [2:0] next_player_pos;
 wire right, left;
 
 assign left = jstkPos[2];
@@ -49,7 +49,6 @@ always @(posedge clk) begin
     end
 end
 
-reg [6:0] idx_i;
 always @(*) begin
     //nextPlayerRow = { `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK };
     //nextPlayerRow[player_pos*data_length +: data_length] = r_player; // TODO: player color

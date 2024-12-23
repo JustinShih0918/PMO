@@ -54,6 +54,7 @@ parameter FINISH = 2;
 wire bubbleFull;
 
 // [Player]
+wire [2:0] player_pos;
 
 // [Score]
 wire scoreAchieve;
@@ -72,11 +73,14 @@ BubbleManager BubbleManager_inst (
     .dclk(dclk),
     .rst(rst),
     .en(en),
+    .jstkPress(jstkPress),
+    .shoot_pos(player_pos),
     .BubbleRow1(Row2),
     .BubbleRow2(Row3),
     .BubbleRow3(Row4),
     .BubbleRow4(Row5),
-    .bubbleFull(bubbleFull)
+    .bubbleFull(bubbleFull),
+    .check_led(led[15:9])
 );
 
 // [Player]
@@ -86,8 +90,8 @@ PlayerManager PlayerManager_inst (
     .rst(rst),
     .en(en),
     .jstkPos(jstkPos),
-    .jstkPress(jstkPress),
     .PlayerRow(Row8),
+    .player_pos(player_pos),
     .pos_led(led[8:0])
 );
 

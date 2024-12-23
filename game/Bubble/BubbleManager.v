@@ -10,16 +10,29 @@ module BubbleManager(
     input dclk,
     input rst,
     input en,
+    input jstkPress,
+    input [2:0] shoot_pos,
     output reg [39:0] BubbleRow1,
     output reg [39:0] BubbleRow2,
     output reg [39:0] BubbleRow3,
     output reg [39:0] BubbleRow4,
-    output wire bubbleFull
+    output wire bubbleFull,
+    output wire [7:0] check_led
 );
 
 // ==============================================================================
 // 							    wire and reg
 // ==============================================================================
+// [state]
+parameter POPPING = 0;
+parameter FALLING = 1;
+reg [1:0] state, next_state;
+
+reg [39:0] fallingRow1, fallingRow2, fallingRow3, fallingRow4;
+
+// [dclk]
+reg prev_dclk;
+wire dclk_edge;
 
 // [Bubble]
 parameter [4:0] r_bubble = 16;
@@ -27,11 +40,9 @@ parameter [4:0] g_bubble = 17;
 parameter [4:0] b_bubble = 18;
 parameter [2:0] data_length = 5;
 reg [39:0] bubbleGen;
-reg [39:0] nextBubbleRow1;
-reg [39:0] nextBubbleRow2;
-reg [39:0] nextBubbleRow3;
-reg [39:0] nextBubbleRow4;
+reg [39:0] nextBubbleRow1, nextBubbleRow2, nextBubbleRow3, nextBubbleRow4;
 reg [6:0] idx; // iterator to check if bubble gen num is valid
+reg [39:0] popRow1, popRow2, popRow3, popRow4;
 
 assign bubbleFull = BubbleRow4 != {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK };
 
@@ -40,10 +51,12 @@ reg enabler;
 reg [4:0] randomBubble;
 wire [1:0] randomNum;
 
+// for debugging
+assign check_led = (jstkPress) ? !check_led : check_led;
+
 // ==============================================================================
 // 							    module instance
 // ==============================================================================
-
 // [RandomNum]
 randomNum randomNum_inst (
     .clk(clk),
@@ -52,16 +65,56 @@ randomNum randomNum_inst (
 );
 
 // ==============================================================================
-// 							    logic
+// 							    dclk edge
 // ==============================================================================
 
-// [Bubble Row Update]
 always @(posedge clk) begin
     if(rst) begin
-        BubbleRow1 <= { r_bubble, r_bubble, b_bubble, b_bubble, b_bubble, b_bubble, g_bubble, g_bubble };
-        BubbleRow2 <= {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK };
-        BubbleRow3 <= {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK };
-        BubbleRow4 <= {`DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK };
+        prev_dclk <= 1'b0;
+    end
+    else begin
+        prev_dclk <= dclk;
+    end
+end
+
+assign dclk_edge = (dclk && !prev_dclk);
+
+// ==============================================================================
+//                                 FSM
+// ==============================================================================
+
+always @(posedge clk) begin
+    if(rst) begin
+        state <= FALLING;
+    end
+    else begin
+        state <= next_state;
+    end
+end
+
+always @(*) begin
+    case(state)
+        POPPING: 
+            next_state = FALLING;
+        FALLING: begin
+            if(jstkPress) next_state = POPPING;
+            else next_state = FALLING;
+        end
+        default: 
+            next_state = FALLING;
+    endcase
+end
+
+// ==============================================================================
+// 							    Bubble Row Update
+// ==============================================================================
+
+always @(posedge clk) begin
+    if(rst) begin
+        BubbleRow1 <= { b_bubble, b_bubble, g_bubble, g_bubble, g_bubble, g_bubble, r_bubble, r_bubble };
+        BubbleRow2 <= { `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK };
+        BubbleRow3 <= { `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK };
+        BubbleRow4 <= { `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK, `DARK };
     end
     else begin
         if(en) begin
@@ -79,23 +132,84 @@ always @(posedge clk) begin
     end
 end
 
-// [Bubble Falling]
-always @(posedge dclk) begin
+// ==============================================================================
+// 							    row update logic
+// ==============================================================================
+
+always @(*) begin
+    case(state)
+        POPPING: begin
+            nextBubbleRow1 = popRow1;
+            nextBubbleRow2 = popRow2;
+            nextBubbleRow3 = popRow3;
+            nextBubbleRow4 = popRow4;
+        end
+        FALLING: begin
+            if(dclk_edge) begin
+                nextBubbleRow1 = fallingRow1;
+                nextBubbleRow2 = fallingRow2;
+                nextBubbleRow3 = fallingRow3;
+                nextBubbleRow4 = fallingRow4;
+            end
+            else begin
+                nextBubbleRow1 = BubbleRow1;
+                nextBubbleRow2 = BubbleRow2;
+                nextBubbleRow3 = BubbleRow3;
+                nextBubbleRow4 = BubbleRow4;
+            end
+        end
+        default: begin
+            nextBubbleRow1 = BubbleRow1;
+            nextBubbleRow2 = BubbleRow2;
+            nextBubbleRow3 = BubbleRow3;
+            nextBubbleRow4 = BubbleRow4;
+        end
+    endcase
+end
+
+// ==============================================================================
+// 							    Bubble Falling
+// ==============================================================================
+
+always @(posedge clk) begin
     if(rst) begin
-        nextBubbleRow1 = BubbleRow1;
-        nextBubbleRow2 = BubbleRow2;
-        nextBubbleRow3 = BubbleRow3;
-        nextBubbleRow4 = BubbleRow4;
+        fallingRow1 <= BubbleRow1;
+        fallingRow2 <= BubbleRow2;
+        fallingRow3 <= BubbleRow3;
+        fallingRow4 <= BubbleRow4;
     end
     else begin
-        nextBubbleRow1 = bubbleGen;
-        nextBubbleRow2 = BubbleRow1;
-        nextBubbleRow3 = BubbleRow2;
-        nextBubbleRow4 = BubbleRow3;
+        fallingRow1 <= bubbleGen;
+        fallingRow2 <= BubbleRow1;
+        fallingRow3 <= BubbleRow2;
+        fallingRow4 <= BubbleRow3;
     end
 end
 
-// [Bubble Generation]
+// ==============================================================================
+// 							    Bubble Pop
+// ==============================================================================
+// testing version
+always @(*) begin
+    for(idx = 0; idx <= 39; idx = idx + 5) begin
+        if(idx == shoot_pos*data_length) begin
+            popRow1[idx +: data_length] = `DARK;
+            popRow2[idx +: data_length] = `DARK;
+            popRow3[idx +: data_length] = `DARK;
+            popRow4[idx +: data_length] = `DARK;
+        end
+        else begin
+            popRow1[idx +: data_length] = BubbleRow1[idx +: data_length];
+            popRow2[idx +: data_length] = BubbleRow2[idx +: data_length];
+            popRow3[idx +: data_length] = BubbleRow3[idx +: data_length];
+            popRow4[idx +: data_length] = BubbleRow4[idx +: data_length];
+        end
+    end
+end
+
+// ==============================================================================
+// 							    Bubble Generation
+// ==============================================================================
 // fake random
 always @(*) begin
     bubbleGen = {BubbleRow1[29:20], BubbleRow1[39:30], BubbleRow1[9:0], BubbleRow1[19:10]};
