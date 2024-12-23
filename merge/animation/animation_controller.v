@@ -100,14 +100,22 @@ module animation_controller (
 
     wire [15:0] ram_data_potato;
     wire finish_count;
+    reg start_potato;
+    reg cnt_mode;
+    always @(posedge clk) begin
+        if(rst) cnt_mode <= 0;
+        else if(go) cnt_mode <= ~cnt_mode; 
+    end
+
     potato potato_inst (
         .clk(clk),
         .rst(rst),
+        .start(start_potato),
         .up(up),
         .down(down),
         .left(left),
         .right(right),
-        .mode(0),
+        .mode(mode),
         .pressed(pressed),
         .ram_addr_x(cnt_x),
         .ram_addr_y(cnt_y),
@@ -123,6 +131,7 @@ module animation_controller (
     parameter SETTING = 2;
     parameter GAME = 3;
     parameter POTATO = 4;
+    parameter FINISH = 5;
 
     parameter IDLE = 0;
     parameter HAPPY = 1;
@@ -203,6 +212,7 @@ module animation_controller (
                 if(pressed) next_state <= MENU;
                 else next_state <= EXPRESSION;
                 en_menu <= 0;
+                start_potato <= 0;
             end
             MENU: begin
                 if(ten_second_menu) next_state <= EXPRESSION;
@@ -211,25 +221,36 @@ module animation_controller (
                 else if(mode == 2 && pressed) next_state <= SETTING;
                 else next_state <= MENU; 
                 en_menu <= 1;
+                start_potato <= 0;
             end
             SETTING: begin
                 if(pressed) next_state <= MENU;
                 else next_state <= SETTING;
                 en_menu <= 0;
+                start_potato <= 0;
             end
             GAME: begin
                 if(pressed) next_state <= MENU;
                 else next_state <= GAME;
                 en_menu <= 0;
+                start_potato <= 0;
             end
             POTATO: begin
-                if(pressed) next_state <= MENU;
+                if(finish_count) next_state <= FINISH;
                 else next_state <= POTATO;
                 en_menu <= 0;
+                start_potato <= 1;
+            end
+            FINISH: begin
+                if(ten_second_menu) next_state <= MENU;
+                else next_state <= FINISH;
+                en_menu <= 1;
+                start_potato <= 0;
             end
             default: begin
                 next_state <= state;
                 en_menu <= en_menu;
+                start_potato <= start_potato;
             end
         endcase
     end
@@ -257,6 +278,9 @@ module animation_controller (
             end
             POTATO: begin
                 ram_data = ram_data_potato;
+            end
+            FINISH: begin
+                ram_data = ram_data_happy;
             end
             default: begin
                 ram_data = ram_data;

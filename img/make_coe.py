@@ -2,9 +2,9 @@ import os
 from PIL import Image
 
 # Define paths
-base_path = r"D:\Justin\HardwareDesign_workspace\PMO\img\numbers\ver1"
-image_path = os.path.join(base_path, 'output.jpg')
-output_path = os.path.join(base_path, 'numbers.coe')
+base_path = r"D:\Justin\HardwareDesign_workspace\PMO\img\numbers\ver2"
+image_path = os.path.join(base_path, 'colon_white.png')
+output_path = os.path.join(base_path, 'colon_white.coe')
 
 def rgb_to_16bit(r, g, b):
     r_5bit = (r >> 3) & 0x1F
@@ -13,8 +13,8 @@ def rgb_to_16bit(r, g, b):
     return (r_5bit << 11) | (g_6bit << 5) | b_5bit
 
 # Open and process image
-img = Image.open(image_path)
-width, height = img.size
+img = Image.open(image_path).convert('RGB')  # Convert to RGB mode
+width, height = 55, 6  # Set expected dimensions
 
 # Create COE file
 with open(output_path, 'w') as f:
@@ -29,8 +29,8 @@ with open(output_path, 'w') as f:
     for y in range(height):
         for x in range(width):
             pixel_count += 1
-            r, g, b = img.getpixel((x, y))
-            rgb_16bit = rgb_to_16bit(r, g, b)
+            pixel = img.getpixel((x, y))
+            rgb_16bit = rgb_to_16bit(*pixel)  # Unpack RGB values
             
             # Write hex value
             if pixel_count == total_pixels:
