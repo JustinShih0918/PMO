@@ -115,7 +115,7 @@ module animation_controller (
         .down(down),
         .left(left),
         .right(right),
-        .mode(mode),
+        .mode(cnt_mode),
         .pressed(pressed),
         .ram_addr_x(cnt_x),
         .ram_addr_y(cnt_y),

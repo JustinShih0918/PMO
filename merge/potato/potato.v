@@ -210,7 +210,7 @@ module potato (
             end
         end
         else if(state == COUNTUP) begin
-            if(second2 == 3) begin
+            if(minute1 == 2 && second2 == 3) begin
                 countup_timeout <= 1;
                 minute2_cnt <= 0;
                 minute1_cnt <= 0;
