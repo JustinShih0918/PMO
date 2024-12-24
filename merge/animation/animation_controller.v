@@ -132,6 +132,22 @@ module animation_controller (
         .ram_data(ram_data_potato)
     );
 
+    wire [3:0] op_jstk_pos;
+    wire finish_game;
+    assign op_jstk_pos = {right, left, up, down};
+    wire [15:0] ram_data_game;
+    game_top game_top_inst (
+        .clk(clk),
+        .rst(rst),
+        .en(start_gaming),
+        .jstkPos(op_jstk_pos),
+        .jstkPress(pressed),
+        .ram_addr_x(cnt_x),
+        .ram_addr_y(cnt_y),
+        .finish_game(finish_game),
+        .ram_data(ram_data_game)
+    );
+
     parameter LCD_H = 162;
     parameter LCD_W = 132;
 
@@ -245,7 +261,7 @@ module animation_controller (
                 start_gaming <= 0;
             end
             GAME: begin
-                if(pressed) next_state <= MENU;
+                if(finish_game) next_state <= FINISH;
                 else next_state <= GAME;
                 en_menu <= 0;
                 start_potato <= 0;
@@ -295,7 +311,7 @@ module animation_controller (
                 ram_data = ram_data_setting;
             end
             GAME: begin
-                ram_data = 18'h5555;
+                ram_data = ram_data_game;
             end
             POTATO: begin
                 ram_data = ram_data_potato;

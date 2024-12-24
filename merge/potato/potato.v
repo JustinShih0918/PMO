@@ -80,7 +80,7 @@ module potato (
         if(rst) begin
             minute1 <= 0;
             minute2 <= 0;
-            second1 <= 5;
+            second1 <= 0;
             second2 <= 0;
         end
         else if(state == CONFIGURE && mode == 1'b0) begin
@@ -210,14 +210,14 @@ module potato (
             end
         end
         else if(state == COUNTUP) begin
-            if(minute1 == 2 && second2 == 3) begin
+            if(second2 == 1 && second1 == 5) begin
                 countup_timeout <= 1;
                 minute2_cnt <= 0;
                 minute1_cnt <= 0;
                 second2_cnt <= 0;
                 second1_cnt <= 0;
             end
-            else if(dclk) begin
+            else if(dclk && start) begin
                if(second1_cnt == 9) begin
                     second1_cnt <= 0;
                     if(second2_cnt == 5) begin
